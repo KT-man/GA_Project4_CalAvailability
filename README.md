@@ -1,1 +1,10 @@
-# GA_Project4_CalAvailability
+# Cal Availability App! 
+
+## Libraries used 
+- ReactJS
+- Recoil
+- Material UI 
+- Django
+- 
+
+- 
