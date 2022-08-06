@@ -14,10 +14,12 @@
     "@emotion/react": "latest",
     "@emotion/server": "latest",
     "@emotion/styled": "latest",
+    "@fullcalendar/daygrid": "^5.11.2",
+    "@fullcalendar/react": "^5.11.2",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "dayjs": "^1.11.4",
     "next": "latest",
-    "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
     "recoil": "^0.7.4"
