@@ -7,8 +7,10 @@ import Link from "../src/Link";
 
 import Head from "next/head";
 
-import InputComponent from "../src/Components/InputComponent";
-import LengthComponent from "../src/Components/LengthComponent";
+import FullCalendar from "@fullcalendar/react"; //
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 export default function Index() {
   return (
@@ -19,16 +21,16 @@ export default function Index() {
       <Container maxWidth="xl">
         <Box sx={{ my: 2, mx: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Next.js example
+            Calendar App
           </Typography>
           <Link href="/about" color="secondary">
             Go to the about page
           </Link>
           <br></br>
+          <Link href="/calendarView" color="primary">
+            View your calendar here!
+          </Link>
           <br></br>
-
-          <InputComponent></InputComponent>
-          <LengthComponent></LengthComponent>
         </Box>
       </Container>
     </>

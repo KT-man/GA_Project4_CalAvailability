@@ -6,6 +6,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider } from "@emotion/react";
 import theme from "../src/theme";
 import createEmotionCache from "../src/createEmotionCache";
+import "@fullcalendar/common/main.css"; // @fullcalendar/react imports @fullcalendar/common
+import "@fullcalendar/daygrid/main.css"; // @fullcalendar/timegrid imports @fullcalendar/daygrid
+import "@fullcalendar/timegrid/main.css"; // @fullcalendar/timegrid is a direct import
+// (and @fullcalendar/interaction has no stylesheet)
 
 import { RecoilRoot } from "recoil";
 

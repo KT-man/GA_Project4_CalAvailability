@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-export const yearAndMonthState = atom({
-  key: "yearAndMonthState",
+export const nameState = atom({
+  key: "nameState",
   default: "",
 });
