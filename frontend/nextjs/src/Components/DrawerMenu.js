@@ -11,7 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 import { useRecoilState } from "recoil";
 
-export default function DrawerMenu() {
+export default function DrawerMenu(props) {
   const [state, setState] = React.useState({});
 
   const toggleDrawer = (anchor, open) => (event) => {
@@ -37,23 +37,34 @@ export default function DrawerMenu() {
     <Box
       sx={{ width: 250 }}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      //   onKeyDown={toggleDrawer(anchor, false)}
+      //   onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {[
-          "New Event",
-          "Show Details",
-          "Invite Participants",
-          "Delete Event",
-        ].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>Blank</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => console.log("asdasdqweqweasdasd")}>
+            <ListItemIcon>Blank</ListItemIcon>
+            <ListItemText primary="New Event" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => console.log("button2")}>
+            <ListItemIcon>Blank</ListItemIcon>
+            <ListItemText primary="Show Event Details" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => console.log("button3")}>
+            <ListItemIcon>Blank</ListItemIcon>
+            <ListItemText primary="Invite Participants" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => console.log("button4")}>
+            <ListItemIcon>Blank</ListItemIcon>
+            <ListItemText primary="Delete Event" />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Divider />
     </Box>
