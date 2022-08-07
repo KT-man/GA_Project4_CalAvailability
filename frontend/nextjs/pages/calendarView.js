@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DrawerMenu from "../src/Components/DrawerMenu";
+import Drawer from "@mui/material/Drawer";
 
 import Link from "../src/Link";
 import Head from "next/head";
@@ -25,23 +26,17 @@ export default function CalendarView() {
   // Toggle Drawer Open
   // ============================================
   // ============================================
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = (event) => {
+    //Need to change anchor to selectedDay
+
     // Curried function
     // First function takes in parameteres anchor and open
     // Second function takes in event parameter
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      console.log(event);
-      return;
-    }
-    console.log("Open Close");
-    console.log(anchor);
-    console.log(open);
-    console.log(drawer);
 
-    setDrawer({ [anchor]: open });
+    console.log("Open Close");
+    console.log(event.startStr);
+    console.log(drawer);
+    setDrawer(!drawer);
   };
 
   // ============FUNCTION END=====================================================
