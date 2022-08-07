@@ -15,8 +15,44 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { initialevents, createEventId } from "../initialevents";
 
 import { useRecoilState } from "recoil";
+import { drawerState } from "../src/atoms/toggleDrawer";
 
 export default function CalendarView() {
+  const [drawer, setDrawer] = useRecoilState(drawerState);
+
+  // ============================================
+  // ============================================
+  // Toggle Drawer Open
+  // ============================================
+  // ============================================
+  const toggleDrawer = (anchor, open) => (event) => {
+    // Curried function
+    // First function takes in parameteres anchor and open
+    // Second function takes in event parameter
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      console.log(event);
+      return;
+    }
+    console.log("Open Close");
+    console.log(anchor);
+    console.log(open);
+    console.log(drawer);
+
+    setDrawer({ [anchor]: open });
+  };
+
+  // ============FUNCTION END=====================================================
+  // -------------------
+
+  // ============================================
+  // ============================================
+  // Creating new event
+  // ============================================
+  // ============================================
+
   const handleDateSelect = (selectedDay) => {
     console.log("This is selected Day ");
     console.log(selectedDay);
@@ -29,11 +65,6 @@ export default function CalendarView() {
 
     if (title) {
       calendarApi.addEvent({
-        // id: createEventId(),
-        // title,
-        // start: selectedDay.startStr,
-        // end: selectedDay.endStr,
-        // allDay: selectedDay.allDay,
         id: createEventId(),
         title,
         start: selectedDay.startStr,
@@ -52,6 +83,15 @@ export default function CalendarView() {
     console.log(calendarApi.currentDataManager.data.eventStore.defs);
   };
 
+  // ============FUNCTION END=====================================================
+  // -------------------
+
+  // ============================================
+  // ============================================
+  // Deleting Event
+  // ============================================
+  // ============================================
+
   const handleEventClick = (clickedEvent) => {
     if (
       confirm(
@@ -63,10 +103,8 @@ export default function CalendarView() {
     }
   };
 
-  // Show Event Details (Default)
-  // Edit Event Details
-  // Send out to participants
-  // Delete event
+  // ============FUNCTION END=====================================================
+  // -------------------
 
   return (
     <>
@@ -108,7 +146,8 @@ export default function CalendarView() {
             fixedWeekCount={false}
             events={initialevents}
             eventAdd={function () {}}
-            select={handleDateSelect}
+            // select={handleDateSelect}
+            select={toggleDrawer}
             eventClick={handleEventClick}
           ></FullCalendar>
           <DrawerMenu></DrawerMenu>
