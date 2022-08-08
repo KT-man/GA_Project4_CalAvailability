@@ -1,8 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
+const { v4: uuidv4 } = require("uuid");
 
-export const initialevents = [
+const seedEvents = [
   {
-    id: createEventId(),
+    id: uuidv4(),
     title: "testEvent1",
     start: "2022-08-01",
     end: "2022-08-01",
@@ -16,18 +16,18 @@ export const initialevents = [
     },
   },
   {
-    id: createEventId(),
+    id: uuidv4(),
     title: "testEvent2",
     start: "2022-08-10T12:00:00",
     end: "2022-08-10T14:00:00",
-
+    allDay: false,
     extendedProps: {
       description: "This is a event created for testing purposes ",
       attendees: [],
     },
   },
   {
-    id: createEventId(),
+    id: uuidv4(),
     title: "testEvent34",
     start: "2022-08-15T15:00:00",
     end: "2022-08-15T15:30:00",
@@ -42,6 +42,4 @@ export const initialevents = [
   },
 ];
 
-export function createEventId() {
-  return uuidv4();
-}
+module.exports = seedEvents;
