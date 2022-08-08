@@ -15,22 +15,35 @@ import { drawerState } from "../atoms/toggleDrawer";
 export default function DrawerMenu() {
   const [drawer, setDrawer] = useRecoilState(drawerState);
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  //   const toggleDrawer = (anchor, open) => (event) => {
+  //     // Curried function
+  //     // First function takes in parameteres anchor and open
+  //     // Second function takes in event parameter
+  //     // if (
+  //     //   event.type === "keydown" &&
+  //     //   (event.key === "Tab" || event.key === "Shift")
+  //     // ) {
+  //     //   console.log(event);
+  //     //   return;
+  //     // }
+
+  //     console.log(anchor);
+  //     console.log(open);
+  //     console.log(drawer);
+  //     setDrawer({ [anchor]: open });
+  //   };
+
+  const toggleDrawer = (event) => {
+    //Need to change anchor to selectedDay
+
     // Curried function
     // First function takes in parameteres anchor and open
     // Second function takes in event parameter
-    // if (
-    //   event.type === "keydown" &&
-    //   (event.key === "Tab" || event.key === "Shift")
-    // ) {
-    //   console.log(event);
-    //   return;
-    // }
 
-    console.log(anchor);
-    console.log(open);
+    console.log("Open Close");
+    console.log(event.startStr);
     console.log(drawer);
-    setDrawer({ [anchor]: open });
+    setDrawer(!drawer);
   };
 
   const list = (anchor) => (

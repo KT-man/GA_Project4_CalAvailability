@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useRef } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -8,7 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import Link from "../src/Link";
 import Head from "next/head";
 
-import FullCalendar from "@fullcalendar/react"; //
+import FullCalendar, { formatDate } from "@fullcalendar/react"; //
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -17,9 +17,18 @@ import { initialevents, createEventId } from "../initialevents";
 
 import { useRecoilState } from "recoil";
 import { drawerState } from "../src/atoms/toggleDrawer";
+import { newEventState } from "../src/atoms/newEventSet";
+import { eventStore } from "../src/atoms/eventStore";
+import RenderList from "../src/Components/RenderList";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 export default function CalendarView() {
   const [drawer, setDrawer] = useRecoilState(drawerState);
+  const [newEvent, setNewEvent] = useRecoilState(newEventState);
+  const [currentEvents, setCurrentEvents] = useRecoilState(eventStore);
+  const calendarRef = useRef();
+
+  console.log(calendarRef.current);
 
   // ============================================
   // ============================================
@@ -27,56 +36,21 @@ export default function CalendarView() {
   // ============================================
   // ============================================
   const toggleDrawer = (event) => {
-    //Need to change anchor to selectedDay
-
     // Curried function
     // First function takes in parameteres anchor and open
     // Second function takes in event parameter
 
-    console.log("Open Close");
     console.log(event.startStr);
-    console.log(drawer);
+
     setDrawer(!drawer);
+    if (!drawer) {
+      console.log("Should only run on open");
+      setNewEvent(event);
+    }
   };
 
   // ============FUNCTION END=====================================================
   // -------------------
-
-  // ============================================
-  // ============================================
-  // Creating new event
-  // ============================================
-  // ============================================
-
-  const handleDateSelect = (selectedDay) => {
-    console.log("This is selected Day ");
-    console.log(selectedDay);
-    let title = prompt("Please enter a new title for your event");
-    let calendarApi = selectedDay.view.calendar;
-
-    console.log(calendarApi);
-
-    calendarApi.unselect(); // clear date selection
-
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectedDay.startStr,
-        end: selectedDay.endStr,
-        extendedProps: {
-          description: "This is a event created for testing purposes ",
-          attendees: [
-            { email: "123@email.com", isAttending: true },
-            { email: "456@hotmail.com", isAttending: false },
-            { email: "789@email.com", isAttending: true },
-          ],
-        },
-      });
-    }
-
-    console.log(calendarApi.currentDataManager.data.eventStore.defs);
-  };
 
   // ============FUNCTION END=====================================================
   // -------------------
@@ -88,6 +62,8 @@ export default function CalendarView() {
   // ============================================
 
   const handleEventClick = (clickedEvent) => {
+    console.log(clickedEvent);
+    console.log(clickedEvent.event.id);
     if (
       confirm(
         `Are you sure you want to delete the event '${clickedEvent.event.title}'`
@@ -98,6 +74,25 @@ export default function CalendarView() {
     }
   };
 
+  // ============FUNCTION END=====================================================
+  // -------------------
+
+  function showEventContent(eventInfo) {
+    // console.log(eventInfo);
+    // console.log(eventInfo);
+    // console.log(eventInfo.event._def);
+    // console.log(eventInfo.event._instance.range.start);
+    // console.log(eventInfo.event._instance.range.end);
+  }
+
+  // ============FUNCTION END=====================================================
+  // -------------------
+  const handleEvents = (events) => {
+    console.log(events);
+    console.log(events[1].start);
+
+    setCurrentEvents(events);
+  };
   // ============FUNCTION END=====================================================
   // -------------------
 
@@ -119,14 +114,15 @@ export default function CalendarView() {
           <br></br>
 
           <FullCalendar
-            timeZone="UTC"
+            ref={calendarRef}
+            timeZone="local"
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
               left: "prevYear,prev,next,nextYear",
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
-            footerToolbar={{ left: "today", center: "today" }}
+            footerToolbar={{ center: "today" }}
             buttonText={{
               today: "Return to Today",
               dayGridMonth: "Monthly",
@@ -140,12 +136,31 @@ export default function CalendarView() {
             dayMaxEvents={true}
             fixedWeekCount={false}
             events={initialevents}
-            eventAdd={function () {}}
+            eventsSet={handleEvents}
             // select={handleDateSelect}
             select={toggleDrawer}
             eventClick={handleEventClick}
+            eventContent={showEventContent}
           ></FullCalendar>
-          <DrawerMenu></DrawerMenu>
+          {/* <DrawerMenu></DrawerMenu> */}
+          <Drawer anchor="right" open={drawer} onClose={toggleDrawer}>
+            <RenderList calendarRef={calendarRef} />
+          </Drawer>
+          {currentEvents.map((event) => {
+            return (
+              <li key={event.id}>
+                <b>
+                  {formatDate(event.start, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </b>
+                <i>{event.title} - </i>
+                <i>{event.id}</i>
+              </li>
+            );
+          })}
         </Box>
       </Container>
     </>
