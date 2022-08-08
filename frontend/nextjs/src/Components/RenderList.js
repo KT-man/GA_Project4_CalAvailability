@@ -32,7 +32,7 @@ const RenderList = (props) => {
     let title = prompt("Please enter a new title for your event");
     let calendarApi = selectedDay.view.calendar;
 
-    console.log(calendarApi);
+    // console.log(calendarApi);
 
     calendarApi.unselect(); // clear date selection
 
@@ -53,7 +53,7 @@ const RenderList = (props) => {
       });
     }
 
-    console.log(calendarApi.currentDataManager.data.eventStore.defs);
+    // console.log(calendarApi.currentDataManager.data.eventStore.defs);
   };
   // ============FUNCTION END=====================================================
   // -------------------
@@ -74,7 +74,7 @@ const RenderList = (props) => {
       .getApi()
       .getEventById("96f21aae-1da9-44bd-a04c-8d2d2c4b584a");
 
-    console.log(getEvent);
+    // console.log(getEvent);
   };
 
   // ============================================
@@ -89,7 +89,7 @@ const RenderList = (props) => {
         `Are you sure you want to delete the event '${clickedEvent.event.title}'`
       )
     ) {
-      console.log(clickedEvent);
+      // console.log(clickedEvent);
       clickedEvent.event.remove();
     }
   };

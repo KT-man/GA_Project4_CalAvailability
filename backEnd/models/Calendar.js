@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const CalendarSchema = new mongoose.Schema(
   {
     id: { type: String, required: true },
-    email: { type: String, unique: true },
+    email: { type: String },
     events: [{ type: String }],
   },
 

@@ -8,6 +8,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const seedCalendars = require("./seedCalendar");
+const dayjs = require("dayjs");
 
 const app = express();
 
@@ -30,10 +31,78 @@ router.get("/seed", async (req, res) => {
 });
 
 //==================
-//================== Show EventIds belonging to a Calendar ID
+//================== Adding cookie to users navigating into calendarView
 //==================
+router.post("/newCalendarId", async (req, res) => {
+  try {
+    // Check if there are cookies. If (!undefined = false), create new cookie
+    if (!req.cookies.calendarId) {
+      const calendarUUID = uuid4();
+      await res.cookie("calendarId", calendarUUID, {
+        secure: false, // true = HTTPS only
+        httpOnly: true,
+        expires: dayjs().add(30, "days").toDate(), // Expires in 30 days from now
+      });
+      const newCalendarId = { id: calendarUUID };
+      console.log(newCalendarId);
 
-router.post("/getEventsForCal", async (req, res) => {
+      return await Calendar.create(newCalendarId, (err, data) => {
+        if (err) {
+          console.log("Error creating new user" + err.message);
+          res
+            .status(400)
+            .json({ status: "error", message: "error encountered" });
+        } else {
+          return res.json({
+            status: "success",
+            message: `calendar ${newCalendarId} created`,
+          });
+        }
+      });
+    }
+
+    const existingCalendar = await Calendar.findOne({
+      id: req.cookies.calendarId,
+    });
+
+    if (existingCalendar) {
+      res.cookie("calendarId", existingCalendar.id, {
+        secure: false,
+        httpOnly: true,
+        expires: dayjs().add(30, "days").toDate(),
+      });
+      return res.json({
+        status: "error",
+        message: "Calendar already exists, loading calendarID...",
+      });
+    }
+
+    await Calendar.create(newCalendarId, (err, data) => {
+      if (err) {
+        console.log("Error creating new user" + err.message);
+        return res
+          .status(400)
+          .json({ status: "error", message: "error encountered" });
+      } else {
+        return res.json({
+          status: "success",
+          message: `calendar ${newCalendarId} created`,
+        });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ status: "error", message: "an error has occurred" });
+  }
+});
+
+//==================
+//================== Show EventIds belonging to a Calendar ID
+//================== CalendarID will be stored in user cookies
+
+router.post("/getEventsForCal", auth, async (req, res) => {
   try {
     const allCalEvents = await Calendar.aggregate([
       { $match: { id: req.body.id } },
@@ -109,6 +178,48 @@ router.delete("/delEventFromCal", async (req, res) => {
   );
 
   res.json(deleteEvent);
+});
+
+//==================
+//================== Delete user cookies and calendar
+//==================
+
+router.delete("/delCalendar", async (req, res) => {
+  const deleteCal = await Calendar.findOneAndDelete(
+    {
+      id: req.cookies.calendarId,
+    },
+    { new: true }
+  );
+
+  res.clearCookie("calendarId");
+  console.log(req.cookies);
+  // res.json(req.cookies);
+  res.json(deleteCal);
+});
+
+//==================
+//==================  FOR OWN USE. CLEAR COOKIES
+//==================
+
+router.delete("/clearcookies", async (req, res) => {
+  console.log(req.cookies);
+  res.clearCookie("calendarId");
+  res.json(req.cookies);
+});
+
+//==================
+//==================  FOR OWN USE. ADD COOKIES
+//==================
+
+router.post("/addcookies", async (req, res) => {
+  console.log(req.cookies);
+  res.cookie("calendarId", "aa11a9ac-db58-42e7-90db-91ab01705d25", {
+    secure: false,
+    httpOnly: true,
+    expires: dayjs().add(30, "days").toDate(),
+  });
+  res.json(req.cookies);
 });
 
 module.exports = router;

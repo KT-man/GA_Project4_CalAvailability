@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import DrawerMenu from "../src/Components/DrawerMenu";
 import Drawer from "@mui/material/Drawer";
 
 import Link from "../src/Link";
@@ -13,14 +12,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { initialevents, createEventId } from "../initialevents";
+import { initialevents } from "../initialevents";
 
 import { useRecoilState } from "recoil";
 import { drawerState } from "../src/atoms/toggleDrawer";
 import { newEventState } from "../src/atoms/newEventSet";
 import { eventStore } from "../src/atoms/eventStore";
 import RenderList from "../src/Components/RenderList";
-import { ConstructionOutlined } from "@mui/icons-material";
 
 export default function CalendarView() {
   const [drawer, setDrawer] = useRecoilState(drawerState);
@@ -28,7 +26,7 @@ export default function CalendarView() {
   const [currentEvents, setCurrentEvents] = useRecoilState(eventStore);
   const calendarRef = useRef();
 
-  console.log(calendarRef.current);
+  // console.log(calendarRef.current);
 
   // ============================================
   // ============================================
@@ -40,17 +38,11 @@ export default function CalendarView() {
     // First function takes in parameteres anchor and open
     // Second function takes in event parameter
 
-    console.log(event.startStr);
-
     setDrawer(!drawer);
     if (!drawer) {
-      console.log("Should only run on open");
       setNewEvent(event);
     }
   };
-
-  // ============FUNCTION END=====================================================
-  // -------------------
 
   // ============FUNCTION END=====================================================
   // -------------------
@@ -62,14 +54,13 @@ export default function CalendarView() {
   // ============================================
 
   const handleEventClick = (clickedEvent) => {
-    console.log(clickedEvent);
-    console.log(clickedEvent.event.id);
     if (
       confirm(
         `Are you sure you want to delete the event '${clickedEvent.event.title}'`
       )
     ) {
-      console.log(clickedEvent);
+      // console.log(clickedEvent.event.id);
+      // console.log(clickedEvent);
       clickedEvent.event.remove();
     }
   };
@@ -88,8 +79,8 @@ export default function CalendarView() {
   // ============FUNCTION END=====================================================
   // -------------------
   const handleEvents = (events) => {
-    console.log(events);
-    console.log(events[1].start);
+    // console.log(events);
+    // console.log(events[1].start);
 
     setCurrentEvents(events);
   };
@@ -113,6 +104,9 @@ export default function CalendarView() {
 
           <br></br>
 
+          {/* ============================================
+          ===========Full Calendar Component
+          ============================================ */}
           <FullCalendar
             ref={calendarRef}
             timeZone="local"
@@ -142,7 +136,11 @@ export default function CalendarView() {
             eventClick={handleEventClick}
             eventContent={showEventContent}
           ></FullCalendar>
-          {/* <DrawerMenu></DrawerMenu> */}
+
+          {/* ============================================
+          ===========Full Calendar Component
+          ============================================ */}
+
           <Drawer anchor="right" open={drawer} onClose={toggleDrawer}>
             <RenderList calendarRef={calendarRef} />
           </Drawer>
