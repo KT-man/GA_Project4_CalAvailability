@@ -30,4 +30,64 @@ router.get("/seed", async (req, res) => {
   });
 });
 
+//==================
+//==================Create new event
+//==================
+router.patch("/createEvent", async (req, res) => {
+  try {
+    const createdEvent = await Event.create({
+      eventId: uuid4(),
+      title: req.body.title,
+      start: req.body.start, // Example Format = YYYY-MM-DDThh:mm:ss
+      end: req.body.end, // Example Format = YYYY-MM-DDThh:mm:ss
+      extendedProps: {
+        description: req.body.description,
+        attendees: req.body.attendees,
+      },
+    });
+
+    console.log(`Event created! : ${createdEvent}`);
+    res.json({
+      status: "ok",
+      message: `event ${createdEvent} created`,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(400)
+      .json({ status: "error", message: "error encountered", error: error });
+  }
+});
+
+//==================
+//================== Delete Event
+//==================
+
+router.delete("/deleteEvent", async (req, res) => {
+  try {
+    const findEvent = await Event.findOne({
+      eventId: req.body.eventId,
+    });
+
+    if (!findEvent) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "event not found" });
+    }
+
+    const deleteEvent = await Event.findOneAndDelete({
+      eventId: req.body.eventId,
+    });
+
+    res.json({ status: "ok", message: `event has been deleted` });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      status: "error",
+      message: "error encountered, event not deleted",
+      error: error,
+    });
+  }
+});
+
 module.exports = router;
