@@ -1,17 +1,18 @@
+// To update seed after each seed of event data
+
 const seedCalendar = [
   {
     id: "cal1",
     email: null,
-    events: [],
+    events: [
+      "df4fefe1-22a2-4f21-bf41-b1f3eb7f07c4",
+      "4938b419-c046-4d58-8b2e-35c49b397476",
+    ],
   },
   {
     id: "cal2",
     email: "abc@cba.com",
-    events: [
-      // To update seed after each seed of event data
-      "f2b70d69-e300-4139-87a0-5d7d4a1857da",
-      "333760f7-4917-45c5-95bc-edb94b66f935",
-    ],
+    events: ["4938b419-c046-4d58-8b2e-35c49b397476"],
   },
 ];
 
