@@ -7,6 +7,11 @@ import Link from "../src/Link";
 
 import Head from "next/head";
 
+import FullCalendar from "@fullcalendar/react"; //
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+
 export default function Index() {
   return (
     <>

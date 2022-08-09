@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
-import { newEventState } from "../atoms/newEventSet";
+import * as React from "react";
 
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -10,14 +8,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 
+import { useRecoilValue } from "recoil";
+import { newEventState } from "../atoms/newEventSet";
+
 import { createEventId } from "../../initialevents";
 
 const RenderList = (props) => {
-  const [showNewEventModal, setShowNewEventModal] = useState(false);
-  const [showEventDetailsModal, setEventDetailsModal] = useState(false);
-  const [showParticipantsModal, setParticipantsModal] = useState(false);
-  const [showDeleteModal, setDeleteModal] = useState(false);
-
   // props.calendarRef.current.getApi()
   // Most important line. This line accesses the calendar manager, which then allows direct modifications to the calendar object
 

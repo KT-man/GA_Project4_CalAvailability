@@ -31,13 +31,6 @@ router.get("/seed", async (req, res) => {
 });
 
 //==================
-//==================Seeding Events to current calendar
-//==================
-router.get("/seedEvents", async (req, res) => {
-  await Calendar.findOneAndUpdate({ id: req.cookies.calendarId }, {});
-});
-
-//==================
 //================== Adding cookie to users navigating into calendarView
 //==================
 router.post("/newCalendarId", async (req, res) => {
@@ -125,13 +118,6 @@ router.post("/getEventsForCal", auth, async (req, res) => {
       //   { $unwind: "$calendarEvents" },
       { $project: { events: 1 } },
     ]);
-    console.log(allCalEvents);
-    if (!allCalEvents) {
-      return res.json({
-        status: "error",
-        message: "no such event or calendar found",
-      });
-    }
 
     return res.json(allCalEvents);
   } catch (error) {
@@ -143,32 +129,23 @@ router.post("/getEventsForCal", auth, async (req, res) => {
 //================== Add event to calendar
 //==================
 router.patch("/addEventToCal", async (req, res) => {
-  try {
-    const eventExists = await Calendar.findOne({
-      id: req.body.id,
-      events: { $elemMatch: { $eq: req.body.eventId } },
+  const eventExists = await Calendar.findOne({
+    id: req.body.id,
+    events: { $elemMatch: { $eq: req.body.eventId } },
+  });
+
+  if (eventExists) {
+    return res.status(400).json({
+      status: "error",
+      message: `event ${eventExists} already exists!`,
     });
-
-    if (eventExists) {
-      return res.status(400).json({
-        status: "error",
-        message: `event ${eventExists} already exists!`,
-      });
-    }
-
-    // Need to check that eventId is input correctly
+  }
+  try {
     const newEvent = await Calendar.findOneAndUpdate(
       { id: req.body.id },
       { $push: { events: req.body.eventId } },
       { new: true }
     );
-
-    if (!newEvent) {
-      return res.json({
-        status: "error",
-        message: "calendar or event id not correct",
-      });
-    }
     return res.json(newEvent);
   } catch (error) {
     res
