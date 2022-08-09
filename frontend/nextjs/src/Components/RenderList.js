@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
-import { newEventState } from "../atoms/newEventSet";
+import React, { useState, useRef } from "react";
 
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -9,6 +7,13 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import { createEventId } from "../../initialevents";
 
@@ -21,7 +26,26 @@ const RenderList = (props) => {
   // props.calendarRef.current.getApi()
   // Most important line. This line accesses the calendar manager, which then allows direct modifications to the calendar object
 
-  const eventToSet = useRecoilValue(newEventState);
+  // ============================================
+  // ============================================
+  // Toggling of Modals
+  // ============================================
+  // ============================================
+  const handleNewEventClick = () => {
+    setShowNewEventModal(!showNewEventModal);
+  };
+
+  const handleEventDetails = () => {
+    setEventDetailsModal(!showEventDetailsModal);
+  };
+
+  const handleParticipantsModal = () => {
+    setParticipantsModal(!showParticipantsModal);
+  };
+
+  const handleDeleteModal = () => {
+    setDeleteModal(!showDeleteModal);
+  };
 
   // ============================================
   // ============================================
@@ -29,36 +53,29 @@ const RenderList = (props) => {
   // ============================================
   // ============================================
 
-  const handleDateSelect = (selectedDay) => {
-    console.log("This is selected Day ");
-    console.log(selectedDay);
+  const [eventTitle, setEventTitle] = useState("Title");
+  const newDate = new Date();
+  const [newStartDate, setStartDate] = useState(
+    newDate.toISOString().replace(/..\d.\d+Z$/g, "")
+  );
+  const [newEndDate, setEndDate] = useState(
+    newDate.toISOString().replace(/..\d.\d+Z$/g, "")
+  );
+  const [eventDesc, setEventDesc] = useState("Description");
 
-    let title = prompt("Please enter a new title for your event");
-    let calendarApi = selectedDay.view.calendar;
-
-    // console.log(calendarApi);
-
-    calendarApi.unselect(); // clear date selection
-
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectedDay.startStr,
-        end: selectedDay.endStr,
-        extendedProps: {
-          description: "This is a event created for testing purposes ",
-          attendees: [
-            { email: "123@email.com", isAttending: true },
-            { email: "456@hotmail.com", isAttending: false },
-            { email: "789@email.com", isAttending: true },
-          ],
-        },
-      });
-    }
-
-    // console.log(calendarApi.currentDataManager.data.eventStore.defs);
+  const handleTitleChange = (e) => {
+    setEventTitle(e.target.value);
   };
+  const handleStartChange = (e) => {
+    setStartDate(e.target.value);
+  };
+  const handleEndChange = (e) => {
+    setEndDate(e.target.value);
+  };
+  const handleDescChange = (e) => {
+    setDesc(e.target.value);
+  };
+
   // ============FUNCTION END=====================================================
   // -------------------
 
@@ -74,11 +91,9 @@ const RenderList = (props) => {
     //   })
     // );
 
-    const getEvent = props.calendarRef.current
-      .getApi()
-      .getEventById("96f21aae-1da9-44bd-a04c-8d2d2c4b584a");
+    const getEvent = props.calendarRef.current.getApi();
 
-    // console.log(getEvent);
+    console.log(getEvent);
   };
 
   // ============================================
@@ -110,14 +125,56 @@ const RenderList = (props) => {
     >
       <List>
         <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              handleDateSelect(eventToSet);
-            }}
-          >
+          <ListItemButton onClick={handleNewEventClick}>
             <ListItemIcon>Blank</ListItemIcon>
             <ListItemText primary="New Event" />
           </ListItemButton>
+          <Dialog open={showNewEventModal} onClose={handleNewEventClick}>
+            <DialogTitle>Create New Event</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Please enter your event details below!
+              </DialogContentText>
+              <TextField
+                sx={{ m: 1 }}
+                id="EventTitle"
+                label="Event Title"
+                type="text"
+                fullWidth
+                value={eventTitle}
+                onChange={handleTitleChange}
+              />
+              <TextField
+                sx={{ m: 1 }}
+                id="starttime"
+                type="datetime-local"
+                label="Start Time"
+                value={newStartDate}
+                onChange={handleStartChange}
+              />
+              <TextField
+                sx={{ m: 1 }}
+                label="End Time"
+                id="endtime"
+                type="datetime-local"
+                value={newEndDate}
+                onChange={handleEndChange}
+              />
+              <TextField
+                sx={{ m: 1 }}
+                id="EventDescription"
+                label="Event Description"
+                type="text"
+                fullWidth
+                value={eventDesc}
+                onChange={handleDescChange}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleNewEventClick}>Cancel</Button>
+              <Button onClick={handleNewEventClick}>Submit</Button>
+            </DialogActions>
+          </Dialog>
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton onClick={() => testerFunction()}>
@@ -138,6 +195,7 @@ const RenderList = (props) => {
           </ListItemButton>
         </ListItem>
       </List>
+
       <Divider />
     </Box>
   );

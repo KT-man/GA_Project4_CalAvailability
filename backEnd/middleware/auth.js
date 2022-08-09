@@ -1,6 +1,7 @@
 const auth = (req, res, next) => {
   try {
     console.log(req.cookies);
+    next();
     // const calId = req.cookies;
 
     // if (token) {

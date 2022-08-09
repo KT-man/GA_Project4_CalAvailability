@@ -40,7 +40,7 @@ router.get("/seedEvents", async (req, res) => {
 //==================
 //================== Adding cookie to users navigating into calendarView
 //==================
-router.post("/newCalendarId", async (req, res) => {
+router.post("/newCalendarId", auth, async (req, res) => {
   try {
     // Check if there are cookies. If (!undefined = false), create new cookie
     if (!req.cookies.calendarId) {
@@ -84,8 +84,6 @@ router.post("/newCalendarId", async (req, res) => {
       });
     }
 
-    const newCalendarId = { id: uuid4 };
-    //Figure this out
     await Calendar.create(newCalendarId, (err, data) => {
       if (err) {
         console.log("Error creating new user" + err.message);

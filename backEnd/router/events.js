@@ -13,7 +13,7 @@ const app = express();
 const { body, validationResult } = require("express-validator");
 
 //==================
-//==================Seeding Data
+//==================Seeding Data into database
 //==================
 router.get("/seed", async (req, res) => {
   await Event.deleteMany();
@@ -28,6 +28,18 @@ router.get("/seed", async (req, res) => {
       res.json({ status: "ok", message: "seeded successfully" });
     }
   });
+});
+
+//==================
+//==================Get all events from database
+//==================
+router.get("/allEvents", async (req, res) => {
+  try {
+    const allEvents = await Event.find({});
+    res.json(allEvents);
+  } catch (error) {
+    res.status(400).json({ status: "error", message: "error encountered" });
+  }
 });
 
 //==================

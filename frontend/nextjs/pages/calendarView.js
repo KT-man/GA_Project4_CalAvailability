@@ -12,15 +12,14 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { initialevents } from "../initialevents";
-
 import { useRecoilState } from "recoil";
 import { drawerState } from "../src/atoms/toggleDrawer";
 import { newEventState } from "../src/atoms/newEventSet";
 import { eventStore } from "../src/atoms/eventStore";
 import RenderList from "../src/Components/RenderList";
 
-export default function CalendarView({ initialEvents }) {
+export default function CalendarView() {
+  const [seedEvents, setSeedEvents] = useState(null);
   const [drawer, setDrawer] = useRecoilState(drawerState);
   const [newEvent, setNewEvent] = useRecoilState(newEventState);
   const [currentEvents, setCurrentEvents] = useRecoilState(eventStore);
@@ -28,8 +27,30 @@ export default function CalendarView({ initialEvents }) {
 
   // ============================================
   // ============================================
-  // Check if user has calendarId cookie already, if yes, load calendar, else, create new calendarId in cookie
+  // Read initial list of events from server
   // ============================================
+  // ============================================
+
+  const fetchEvents = async (url, config) => {
+    try {
+      const url = "http://localhost:5001/events/allEvents";
+      const config = {
+        method: "GET",
+        "Content-type": "application/json",
+      };
+      const res = await fetch(url, config);
+      const data = await res.json();
+
+      setSeedEvents(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ============================================
+  // ============================================
+  // Check if user has calendarId cookie already, if yes, load calendar, else, create new calendarId in cookie
+  // ==============Cookies are not being stored on localhost:3000? Can't find the cookie
   // ============================================
 
   const fetchCalendarId = async (url, config) => {
@@ -37,9 +58,6 @@ export default function CalendarView({ initialEvents }) {
       const url = "http://localhost:5001/calendars/newCalendarId";
       const config = {
         method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
       };
       const res = await fetch(url, config);
       const data = await res.json();
@@ -52,6 +70,7 @@ export default function CalendarView({ initialEvents }) {
 
   useEffect(() => {
     fetchCalendarId();
+    fetchEvents();
   }, []);
 
   // ============================================
@@ -65,9 +84,6 @@ export default function CalendarView({ initialEvents }) {
       setNewEvent(event);
     }
   };
-
-  // ============FUNCTION END=====================================================
-  // -------------------
 
   // ============================================
   // ============================================
@@ -151,7 +167,7 @@ export default function CalendarView({ initialEvents }) {
             initialView="dayGridMonth"
             dayMaxEvents={true}
             fixedWeekCount={false}
-            events={initialevents} // ======= Change this first to read from server
+            events={seedEvents} // ======= Change this first to read from server
             eventsSet={handleEvents}
             // select={handleDateSelect}
             select={toggleDrawer}
@@ -166,21 +182,6 @@ export default function CalendarView({ initialEvents }) {
           <Drawer anchor="right" open={drawer} onClose={toggleDrawer}>
             <RenderList calendarRef={calendarRef} />
           </Drawer>
-          {currentEvents.map((event) => {
-            return (
-              <li key={event.id}>
-                <b>
-                  {formatDate(event.start, {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </b>
-                <i>{event.title} - </i>
-                <i>{event.id}</i>
-              </li>
-            );
-          })}
         </Box>
       </Container>
     </>
