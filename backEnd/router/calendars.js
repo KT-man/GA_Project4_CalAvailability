@@ -34,7 +34,7 @@ router.get("/seed", async (req, res) => {
 //==================Seeding Events to current calendar
 //==================
 router.get("/seedEvents", async (req, res) => {
-  await Calendar.findOneAndUpdate({ id: req.cookies.calendarId }, {});
+  await Calendar.findOneAndUpdate({ calId: req.cookies.calendarId }, {});
 });
 
 //==================
@@ -50,7 +50,7 @@ router.post("/newCalendarId", auth, async (req, res) => {
         httpOnly: true,
         expires: dayjs().add(30, "days").toDate(), // Expires in 30 days from now
       });
-      const newCalendarId = { id: calendarUUID };
+      const newCalendarId = { calId: calendarUUID };
       console.log(newCalendarId);
 
       return await Calendar.create(newCalendarId, (err, data) => {
@@ -69,11 +69,11 @@ router.post("/newCalendarId", auth, async (req, res) => {
     }
 
     const existingCalendar = await Calendar.findOne({
-      id: req.cookies.calendarId,
+      calId: req.cookies.calendarId,
     });
 
     if (existingCalendar) {
-      res.cookie("calendarId", existingCalendar.id, {
+      res.cookie("calendarId", existingCalendar.calId, {
         secure: false,
         httpOnly: true,
         expires: dayjs().add(30, "days").toDate(),
@@ -112,12 +112,12 @@ router.post("/newCalendarId", auth, async (req, res) => {
 router.post("/getEventsForCal", auth, async (req, res) => {
   try {
     const allCalEvents = await Calendar.aggregate([
-      { $match: { id: req.body.id } },
+      { $match: { calId: req.body.calId } },
       {
         $lookup: {
           from: "events",
           localField: "events",
-          foreignField: "eventId",
+          foreignField: "id",
           as: "calendarEvents",
         },
       },
@@ -144,8 +144,8 @@ router.post("/getEventsForCal", auth, async (req, res) => {
 router.patch("/addEventToCal", async (req, res) => {
   try {
     const eventExists = await Calendar.findOne({
-      id: req.body.id,
-      events: { $elemMatch: { $eq: req.body.eventId } },
+      calId: req.body.calId,
+      events: { $elemMatch: { $eq: req.body.id } },
     });
 
     if (eventExists) {
@@ -157,8 +157,8 @@ router.patch("/addEventToCal", async (req, res) => {
 
     // Need to check that eventId is input correctly
     const newEvent = await Calendar.findOneAndUpdate(
-      { id: req.body.id },
-      { $push: { events: req.body.eventId } },
+      { calId: req.body.calId },
+      { $push: { events: req.body.id } },
       { new: true }
     );
 
@@ -181,8 +181,8 @@ router.patch("/addEventToCal", async (req, res) => {
 //==================
 router.delete("/delEventFromCal", async (req, res) => {
   const eventExists = await Calendar.findOne({
-    id: req.body.id,
-    events: { $elemMatch: { $eq: req.body.eventId } },
+    calId: req.body.calId,
+    events: { $elemMatch: { $eq: req.body.id } },
   });
 
   if (!eventExists) {
@@ -194,9 +194,9 @@ router.delete("/delEventFromCal", async (req, res) => {
 
   const deleteEvent = await Calendar.findOneAndUpdate(
     {
-      id: req.body.id,
+      calId: req.body.calId,
     },
-    { $pull: { events: { $eq: req.body.eventId } } },
+    { $pull: { events: { $eq: req.body.id } } },
     { new: true }
   );
 
@@ -210,7 +210,7 @@ router.delete("/delEventFromCal", async (req, res) => {
 router.delete("/delCalendar", async (req, res) => {
   const deleteCal = await Calendar.findOneAndDelete(
     {
-      id: req.cookies.calendarId,
+      calId: req.cookies.calendarId,
     },
     { new: true }
   );

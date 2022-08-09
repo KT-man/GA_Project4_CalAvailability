@@ -18,6 +18,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 const RenderList = (props) => {
   const [showNewEventModal, setShowNewEventModal] = useState(false);
   const [showEventDetailsModal, setEventDetailsModal] = useState(false);
@@ -199,56 +205,23 @@ const RenderList = (props) => {
         {/* Start of Second Button */}
         {/* Start of Second Button */}
         <ListItem disablePadding>
-          <ListItemButton onClick={() => showDetailsOfEvents()}>
+          <ListItemButton onClick={() => handleEventDetails()}>
             <ListItemIcon>Blank</ListItemIcon>
             <ListItemText primary="Show Event Details for Today!" />
           </ListItemButton>
-          <Dialog open={showNewEventModal} onClose={handleNewEventClick}>
-            <DialogTitle>Create New Event</DialogTitle>
+          <Dialog open={showEventDetailsModal} onClose={handleEventDetails}>
+            <DialogTitle>Event Details for "Day"</DialogTitle>
             <DialogContent>
-              <DialogContentText>
-                Please enter your event details below!
-              </DialogContentText>
-              <TextField
-                sx={{ m: 1 }}
-                id="EventTitle"
-                label="Event Title"
-                type="text"
-                fullWidth
-                inputRef={titleRef}
-              />
-              <TextField
-                sx={{ m: 1 }}
-                id="starttime"
-                type="datetime-local"
-                label="Start Time"
-                inputRef={startRef}
-                defaultValue={currentDate
-                  .toISOString()
-                  .replace(/..\d.\d+Z$/g, "")}
-              />
-              <TextField
-                sx={{ m: 1 }}
-                label="End Time"
-                id="endtime"
-                type="datetime-local"
-                inputRef={endRef}
-              />
-              <TextField
-                sx={{ m: 1 }}
-                id="EventDescription"
-                label="Event Description"
-                type="text"
-                fullWidth
-                inputRef={descRef}
-              />
+              <Accordion>
+                <AccordionSummary></AccordionSummary>
+                <AccordionDetails></AccordionDetails>
+              </Accordion>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleNewEventClick}>Cancel</Button>
               <Button
                 onClick={() => {
-                  handleNewEventClick();
-                  formSubmit();
+                  handleEventDetails();
                 }}
               >
                 Submit
