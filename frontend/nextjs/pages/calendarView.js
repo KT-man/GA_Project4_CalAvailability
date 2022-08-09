@@ -28,12 +28,6 @@ export default function CalendarView() {
 
   // console.log(calendarRef.current);
 
-  // ============================================
-  // ============================================
-  // Check if user has calendarId cookie already, if yes, load calendar, else, create new calendarId in cookie
-  // ============================================
-  // ============================================
-
   const fetchCalendarId = async (url, config) => {
     try {
       const url = "http://localhost:5001/calendars/newCalendarId";
