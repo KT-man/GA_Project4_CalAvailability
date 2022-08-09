@@ -85,6 +85,7 @@ router.post("/newCalendarId", async (req, res) => {
     }
 
     const newCalendarId = { id: uuid4 };
+    //Figure this out
     await Calendar.create(newCalendarId, (err, data) => {
       if (err) {
         console.log("Error creating new user" + err.message);
