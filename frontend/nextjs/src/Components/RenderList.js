@@ -15,8 +15,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { createEventId } from "../../initialevents";
-
 const RenderList = (props) => {
   const [showNewEventModal, setShowNewEventModal] = useState(false);
   const [showEventDetailsModal, setEventDetailsModal] = useState(false);
@@ -53,27 +51,32 @@ const RenderList = (props) => {
   // ============================================
   // ============================================
 
-  const [eventTitle, setEventTitle] = useState("Title");
-  const newDate = new Date();
-  const [newStartDate, setStartDate] = useState(
-    newDate.toISOString().replace(/..\d.\d+Z$/g, "")
-  );
-  const [newEndDate, setEndDate] = useState(
-    newDate.toISOString().replace(/..\d.\d+Z$/g, "")
-  );
-  const [eventDesc, setEventDesc] = useState("Description");
+  const currentDate = new Date();
 
-  const handleTitleChange = (e) => {
-    setEventTitle(e.target.value);
-  };
-  const handleStartChange = (e) => {
-    setStartDate(e.target.value);
-  };
-  const handleEndChange = (e) => {
-    setEndDate(e.target.value);
-  };
-  const handleDescChange = (e) => {
-    setDesc(e.target.value);
+  const titleRef = useRef(null);
+  const startRef = useRef(currentDate.toISOString().replace(/..\d.\d+Z$/g, ""));
+  const endRef = useRef(currentDate.toISOString().split("T")[0]);
+  const descRef = useRef(null);
+
+  const formSubmit = async () => {
+    const data = {
+      title: titleRef.current.value,
+      start: startRef.current.value,
+      end: endRef.current.value,
+      extendedProps: { description: descRef.current.value },
+    };
+
+    // Create new event on Calendar
+    props.calendarRef.current.getApi().addEvent(data);
+
+    // Create new event in backend
+    const res = await fetch("http://localhost:5001/events/createEvent", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: { "content-type": "application/json" },
+    });
+
+    const resMessage = res.json();
   };
 
   // ============FUNCTION END=====================================================
@@ -141,24 +144,24 @@ const RenderList = (props) => {
                 label="Event Title"
                 type="text"
                 fullWidth
-                value={eventTitle}
-                onChange={handleTitleChange}
+                inputRef={titleRef}
               />
               <TextField
                 sx={{ m: 1 }}
                 id="starttime"
                 type="datetime-local"
                 label="Start Time"
-                value={newStartDate}
-                onChange={handleStartChange}
+                inputRef={startRef}
+                defaultValue={currentDate
+                  .toISOString()
+                  .replace(/..\d.\d+Z$/g, "")}
               />
               <TextField
                 sx={{ m: 1 }}
                 label="End Time"
                 id="endtime"
                 type="datetime-local"
-                value={newEndDate}
-                onChange={handleEndChange}
+                inputRef={endRef}
               />
               <TextField
                 sx={{ m: 1 }}
@@ -166,13 +169,19 @@ const RenderList = (props) => {
                 label="Event Description"
                 type="text"
                 fullWidth
-                value={eventDesc}
-                onChange={handleDescChange}
+                inputRef={descRef}
               />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleNewEventClick}>Cancel</Button>
-              <Button onClick={handleNewEventClick}>Submit</Button>
+              <Button
+                onClick={() => {
+                  handleNewEventClick();
+                  formSubmit();
+                }}
+              >
+                Submit
+              </Button>
             </DialogActions>
           </Dialog>
         </ListItem>

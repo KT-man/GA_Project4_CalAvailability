@@ -13,14 +13,13 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { useRecoilState } from "recoil";
-import { drawerState } from "../src/atoms/toggleDrawer";
 import { newEventState } from "../src/atoms/newEventSet";
 import { eventStore } from "../src/atoms/eventStore";
 import RenderList from "../src/Components/RenderList";
 
 export default function CalendarView() {
   const [seedEvents, setSeedEvents] = useState(null);
-  const [drawer, setDrawer] = useRecoilState(drawerState);
+  const [drawer, setDrawer] = useState(false);
   const [newEvent, setNewEvent] = useRecoilState(newEventState);
   const [currentEvents, setCurrentEvents] = useRecoilState(eventStore);
   const calendarRef = useRef();
@@ -80,9 +79,6 @@ export default function CalendarView() {
   // ============================================
   const toggleDrawer = (event) => {
     setDrawer(!drawer);
-    if (!drawer) {
-      setNewEvent(event);
-    }
   };
 
   // ============================================
