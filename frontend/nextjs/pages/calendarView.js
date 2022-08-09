@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -20,13 +20,11 @@ import { newEventState } from "../src/atoms/newEventSet";
 import { eventStore } from "../src/atoms/eventStore";
 import RenderList from "../src/Components/RenderList";
 
-export default function CalendarView() {
+export default function CalendarView({ initialEvents }) {
   const [drawer, setDrawer] = useRecoilState(drawerState);
   const [newEvent, setNewEvent] = useRecoilState(newEventState);
   const [currentEvents, setCurrentEvents] = useRecoilState(eventStore);
   const calendarRef = useRef();
-
-  // console.log(calendarRef.current);
 
   // ============================================
   // ============================================
@@ -34,10 +32,6 @@ export default function CalendarView() {
   // ============================================
   // ============================================
   const toggleDrawer = (event) => {
-    // Curried function
-    // First function takes in parameteres anchor and open
-    // Second function takes in event parameter
-
     setDrawer(!drawer);
     if (!drawer) {
       setNewEvent(event);
@@ -90,15 +84,15 @@ export default function CalendarView() {
   return (
     <>
       <Head>
-        <title>Your Calendar</title>
+        <title>Calendar</title>
       </Head>
       <Container maxWidth="xl">
         <Box sx={{ my: 2, mx: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Next.js example
           </Typography>
-          <Link href="/" color="secondary">
-            Back to the homepage
+          <Link href="/" color="primary">
+            Back to homepage
           </Link>
           <br></br>
 
@@ -129,7 +123,7 @@ export default function CalendarView() {
             initialView="dayGridMonth"
             dayMaxEvents={true}
             fixedWeekCount={false}
-            events={initialevents}
+            events={initialevents} // ======= Change this first to read from server
             eventsSet={handleEvents}
             // select={handleDateSelect}
             select={toggleDrawer}

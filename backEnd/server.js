@@ -8,7 +8,7 @@ const calendars = require("./router/calendars");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-
+app.use(cors());
 connectDB(process.env.MONGODB_URI);
 app.use(cookieParser());
 
