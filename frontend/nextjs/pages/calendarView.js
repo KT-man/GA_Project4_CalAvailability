@@ -28,6 +28,34 @@ export default function CalendarView({ initialEvents }) {
 
   // ============================================
   // ============================================
+  // Check if user has calendarId cookie already, if yes, load calendar, else, create new calendarId in cookie
+  // ============================================
+  // ============================================
+
+  const fetchCalendarId = async (url, config) => {
+    try {
+      const url = "http://localhost:5001/calendars/newCalendarId";
+      const config = {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const res = await fetch(url, config);
+      const data = await res.json();
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCalendarId();
+  }, []);
+
+  // ============================================
+  // ============================================
   // Toggle Drawer Open
   // ============================================
   // ============================================

@@ -62,7 +62,7 @@ router.post("/newCalendarId", async (req, res) => {
         } else {
           return res.json({
             status: "success",
-            message: `calendar ${newCalendarId} created`,
+            message: `new calendar created`,
           });
         }
       });
@@ -84,6 +84,7 @@ router.post("/newCalendarId", async (req, res) => {
       });
     }
 
+    const newCalendarId = { id: uuid4 };
     await Calendar.create(newCalendarId, (err, data) => {
       if (err) {
         console.log("Error creating new user" + err.message);
@@ -93,7 +94,7 @@ router.post("/newCalendarId", async (req, res) => {
       } else {
         return res.json({
           status: "success",
-          message: `calendar ${newCalendarId} created`,
+          message: `new calendar created`,
         });
       }
     });
