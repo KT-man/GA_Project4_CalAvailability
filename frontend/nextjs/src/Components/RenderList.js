@@ -116,6 +116,11 @@ const RenderList = (props) => {
   const showDetailsOfEvents = () => {
     // Filter out for events in clicked month first
     console.log(drawerClick.startStr);
+    const allEvents = props.calendarRef.current.getApi().getEvents();
+
+    const eventsOnDay = allEvents.filter((event) => {
+      return event.startStr.split("T")[0] === drawerClick.startStr;
+    });
   };
 
   // ============================================
@@ -205,7 +210,12 @@ const RenderList = (props) => {
         {/* Start of Second Button */}
         {/* Start of Second Button */}
         <ListItem disablePadding>
-          <ListItemButton onClick={() => handleEventDetails()}>
+          <ListItemButton
+            onClick={() => {
+              handleEventDetails();
+              showDetailsOfEvents();
+            }}
+          >
             <ListItemIcon>Blank</ListItemIcon>
             <ListItemText primary="Show Event Details for Today!" />
           </ListItemButton>
