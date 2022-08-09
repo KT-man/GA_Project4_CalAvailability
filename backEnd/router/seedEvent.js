@@ -40,6 +40,16 @@ const seedEvents = [
       ],
     },
   },
+  {
+    eventId: uuidv4(),
+    title: "Another one",
+    start: "2022-09-02T15:00:00",
+    end: "2022-09-02T17:30:00",
+    extendedProps: {
+      description: "This is a event created for testing purposes ",
+      attendees: [],
+    },
+  },
 ];
 
 module.exports = seedEvents;

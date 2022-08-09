@@ -14,20 +14,23 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import { useRecoilState } from "recoil";
 import { newEventState } from "../src/atoms/newEventSet";
-import { eventStore } from "../src/atoms/eventStore";
+import { currentEvent } from "../src/atoms/currentEvents";
+import { currentClick } from "../src/atoms/currentClick";
 import RenderList from "../src/Components/RenderList";
 
 export default function CalendarView() {
   const [seedEvents, setSeedEvents] = useState(null);
   const [drawer, setDrawer] = useState(false);
   const [newEvent, setNewEvent] = useRecoilState(newEventState);
-  const [currentEvents, setCurrentEvents] = useRecoilState(eventStore);
+  const [currentEvents, setCurrentEvents] = useRecoilState(currentEvent);
+  const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
+
   const calendarRef = useRef();
 
   // ============================================
   // ============================================
   // Read initial list of events from server
-  // ============================================
+  // =================Loaded in with useEffect below
   // ============================================
 
   const fetchEvents = async (url, config) => {
@@ -79,7 +82,19 @@ export default function CalendarView() {
   // ============================================
   const toggleDrawer = (event) => {
     setDrawer(!drawer);
+    if (!drawer) {
+      // Trigger on drawer open
+      console.log(event);
+
+      setDrawerClick(event); // Might be a date Object. Use <obj>.startStr to get start date https://fullcalendar.io/docs/date-object
+
+      // setCurrentEvents(event); // Stores all event objects in event store "currentEvents"
+
+      //
+    }
   };
+
+  // Have to compare strings for dates, and then to figure out how to display more data
 
   // ============================================
   // ============================================
@@ -93,7 +108,7 @@ export default function CalendarView() {
         `Are you sure you want to delete the event '${clickedEvent.event.title}'`
       )
     ) {
-      // console.log(clickedEvent.event.id);
+      console.log(clickedEvent.event.id);
       // console.log(clickedEvent);
       clickedEvent.event.remove();
     }
@@ -104,10 +119,6 @@ export default function CalendarView() {
 
   function showEventContent(eventInfo) {
     // console.log(eventInfo);
-    // console.log(eventInfo);
-    // console.log(eventInfo.event._def);
-    // console.log(eventInfo.event._instance.range.start);
-    // console.log(eventInfo.event._instance.range.end);
   }
 
   // ============FUNCTION END=====================================================
@@ -165,7 +176,6 @@ export default function CalendarView() {
             fixedWeekCount={false}
             events={seedEvents} // ======= Change this first to read from server
             eventsSet={handleEvents}
-            // select={handleDateSelect}
             select={toggleDrawer}
             eventClick={handleEventClick}
             eventContent={showEventContent}

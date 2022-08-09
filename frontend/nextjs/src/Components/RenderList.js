@@ -1,4 +1,7 @@
 import React, { useState, useRef } from "react";
+import { useRecoilState } from "recoil";
+import { currentEvent } from "../atoms/currentEvents";
+import { currentClick } from "../atoms/currentClick";
 
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -21,6 +24,16 @@ const RenderList = (props) => {
   const [showParticipantsModal, setParticipantsModal] = useState(false);
   const [showDeleteModal, setDeleteModal] = useState(false);
 
+  const [currentEvents, setCurrentEvents] = useRecoilState(currentEvent);
+
+  const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
+
+  // calendarRef.current
+  //   .getApi()
+  //   .getEvents()
+  //   .forEach((item) => {
+  //     console.log(item.startStr);
+  //   });
   // props.calendarRef.current.getApi()
   // Most important line. This line accesses the calendar manager, which then allows direct modifications to the calendar object
 
@@ -47,7 +60,7 @@ const RenderList = (props) => {
 
   // ============================================
   // ============================================
-  // Creating new event
+  // Creating new event (Button 1)
   // ============================================
   // ============================================
 
@@ -66,9 +79,6 @@ const RenderList = (props) => {
       extendedProps: { description: descRef.current.value },
     };
 
-    // Create new event on Calendar
-    props.calendarRef.current.getApi().addEvent(data);
-
     // Create new event in backend
     const res = await fetch("http://localhost:5001/events/createEvent", {
       method: "PATCH",
@@ -76,27 +86,30 @@ const RenderList = (props) => {
       headers: { "content-type": "application/json" },
     });
 
-    const resMessage = res.json();
+    const resMessage = await res.json();
+
+    // Create new event on Calendar
+    // Seems that if dates are input wrongly it will default to a 1h slot
+    if (resMessage.status === "error") {
+      alert("Error occurred! Please try adding event again");
+      return;
+    } else {
+      props.calendarRef.current.getApi().addEvent(data);
+    }
   };
 
   // ============FUNCTION END=====================================================
   // -------------------
 
-  const testerFunction = () => {
-    console.log("this is tester function");
+  // ============================================
+  // ============================================
+  // Showing details of events in month (Button 2)
+  // ============================================
+  // ============================================
 
-    // console.log(
-    //   props.calendarRef.current.getApi().addEvent({
-    //     id: createEventId(),
-    //     title: "NewTester",
-    //     start: "2022-08-12",
-    //     end: "2022-08-12",
-    //   })
-    // );
-
-    const getEvent = props.calendarRef.current.getApi();
-
-    console.log(getEvent);
+  const showDetailsOfEvents = () => {
+    // Filter out for events in clicked month first
+    console.log(drawerClick.startStr);
   };
 
   // ============================================
@@ -120,12 +133,7 @@ const RenderList = (props) => {
   // -------------------
 
   return (
-    <Box
-      sx={{ width: 350 }}
-      role="presentation"
-      //   onClick={toggleDrawer(anchor, false)}
-      // onKeyDown={toggleDrawer(anchor, false)}
-    >
+    <Box sx={{ width: 350 }} role="presentation">
       <List>
         <ListItem disablePadding>
           <ListItemButton onClick={handleNewEventClick}>
@@ -185,12 +193,72 @@ const RenderList = (props) => {
             </DialogActions>
           </Dialog>
         </ListItem>
+        {/* End of First Button  */}
+        {/* End of First Button  */}
+        {/* ======================================================================= */}
+        {/* Start of Second Button */}
+        {/* Start of Second Button */}
         <ListItem disablePadding>
-          <ListItemButton onClick={() => testerFunction()}>
+          <ListItemButton onClick={() => showDetailsOfEvents()}>
             <ListItemIcon>Blank</ListItemIcon>
-            <ListItemText primary="Show Event Details" />
+            <ListItemText primary="Show Event Details for Today!" />
           </ListItemButton>
+          <Dialog open={showNewEventModal} onClose={handleNewEventClick}>
+            <DialogTitle>Create New Event</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Please enter your event details below!
+              </DialogContentText>
+              <TextField
+                sx={{ m: 1 }}
+                id="EventTitle"
+                label="Event Title"
+                type="text"
+                fullWidth
+                inputRef={titleRef}
+              />
+              <TextField
+                sx={{ m: 1 }}
+                id="starttime"
+                type="datetime-local"
+                label="Start Time"
+                inputRef={startRef}
+                defaultValue={currentDate
+                  .toISOString()
+                  .replace(/..\d.\d+Z$/g, "")}
+              />
+              <TextField
+                sx={{ m: 1 }}
+                label="End Time"
+                id="endtime"
+                type="datetime-local"
+                inputRef={endRef}
+              />
+              <TextField
+                sx={{ m: 1 }}
+                id="EventDescription"
+                label="Event Description"
+                type="text"
+                fullWidth
+                inputRef={descRef}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleNewEventClick}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  handleNewEventClick();
+                  formSubmit();
+                }}
+              >
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
         </ListItem>
+        {/* End of Second Button */}
+        {/* End of Second Button */}
+        {/* ======================================================================= */}
         <ListItem disablePadding>
           <ListItemButton onClick={() => console.log("button3")}>
             <ListItemIcon>Blank</ListItemIcon>
