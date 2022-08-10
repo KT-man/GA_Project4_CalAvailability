@@ -32,7 +32,7 @@ export default function CalendarView() {
   // ============================================
   // ============================================
   // Read initial list of events from server
-  // =================Loaded in with useEffect below
+  // ============Not as useful or displayed. Uncomments events = seedEvents in full Calendar to reveal
   // ============================================
 
   const fetchEvents = async (url, config) => {
@@ -59,11 +59,6 @@ export default function CalendarView() {
 
   const fetchCalendarId = async (url, config) => {
     try {
-      // const pageCookie = await fetch("http://localhost:3000/api/calendarID", {
-      //   method: "GET",
-      // }).then((result) => result.json());
-      // Skip this step by fetching cookie and storing in recoil state userCookies
-      // Drawback is must load homepage first before going to the next page
       const calendarData = {
         calId: userCookies.cookie_value,
       };
@@ -84,9 +79,39 @@ export default function CalendarView() {
     }
   };
 
+  // ============================================
+  // ============================================
+  // Load events that are stored within the user's calendar
+  // ============================================
+  // ============================================
+  const getEventsForCal = async (url, config) => {
+    try {
+      const data = {
+        calId: userCookies.cookie_value,
+      };
+      const url = "http://localhost:5001/calendars/getEventsForCal";
+      const config = {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "content-type": "application/json" },
+      };
+      const res = await fetch(url, config);
+      const eventData = await res.json();
+
+      if (eventData) {
+        eventData.forEach((event) => {
+          calendarRef.current.getApi().addEvent(event);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchCalendarId();
     fetchEvents();
+    getEventsForCal();
   }, []);
 
   // ============================================
@@ -187,7 +212,7 @@ export default function CalendarView() {
             initialView="dayGridMonth"
             dayMaxEvents={true}
             fixedWeekCount={false}
-            events={seedEvents} // ======= Change this first to read from server
+            // events={seedEvents} // ======= Change this first to read from server Removed to read calendar events only
             eventsSet={handleEvents}
             select={toggleDrawer}
             eventClick={handleEventClick}

@@ -84,6 +84,7 @@ const RenderList = (props) => {
   // =======================createNewEvent will create a event in the event database
   const createNewEvent = async () => {
     const data = {
+      _id: "lame",
       id: uuidv4(),
       title: titleRef.current.value,
       start: startRef.current.value,
@@ -255,11 +256,20 @@ const RenderList = (props) => {
               </Accordion>
               {dailyEvents.map((event) => {
                 return (
-                  <Accordion>
+                  <Accordion key={event.id}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                       {`Title: ${event.title}`}
                     </AccordionSummary>
-                    <AccordionDetails>{`id : ${event.id} Start time: ${event.start}\ End time: ${event.end} Event Description: ${event.extendedProps.description} `}</AccordionDetails>
+                    <AccordionDetails>
+                      <List>
+                        <ListItem></ListItem>
+                        <ListItemText
+                          primary="Event Start Time"
+                          secondary={event.startStr}
+                        ></ListItemText>
+                      </List>
+                    </AccordionDetails>
+                    {/* {`id : ${event.id} Start time: ${event.start}\ End time: ${event.end} Event Description: ${event.extendedProps.description} `} */}
                   </Accordion>
                 );
               })}

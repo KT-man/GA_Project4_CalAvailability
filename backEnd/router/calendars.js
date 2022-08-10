@@ -70,76 +70,11 @@ router.post("/newCalendarId", async (req, res) => {
   } catch (error) {}
 });
 
-// router.post("/newCalendarId", auth, async (req, res) => {
-//   try {
-//     // Check if there are cookies. If (!undefined = false), create new cookie
-//     if (!req.cookies.calendarId) {
-//       const calendarUUID = uuid4();
-
-//       const newCalendarId = { calId: calendarUUID };
-//       console.log(newCalendarId);
-
-//       return await Calendar.create(newCalendarId, (err, data) => {
-//         if (err) {
-//           console.log("Error creating new user" + err.message);
-//           res
-//             .status(400)
-//             .json({ status: "error", message: "error encountered" });
-//         } else {
-//           return res.json({
-//             status: "success",
-//             message: `new calendar created`,
-//           });
-//         }
-//       });
-//     }
-
-//     const existingCalendar = await Calendar.findOne({
-//       calId: req.cookies.calendarId,
-//     });
-
-//     console.log(existingCalendar);
-
-//     if (existingCalendar) {
-//       res.cookie("calendarId", existingCalendar.calId, {
-//         secure: false,
-//         httpOnly: true,
-//         expires: dayjs().add(30, "days").toDate(),
-//       });
-//       return res.json({
-//         status: "error",
-//         message: "Calendar already exists, loading calendarID...",
-//       });
-//     }
-
-//     await Calendar.create(newCalendarId, (err, data) => {
-//       if (err) {
-//         console.log("Error creating new user" + err.message);
-//         return res
-//           .status(400)
-//           .json({ status: "error", message: "error encountered" });
-//       } else {
-//         return res.json({
-//           status: "success",
-//           message: `new calendar created`,
-//         });
-//       }
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(400).json({
-//       status: "error",
-//       message: "an error has occurred",
-//       error: error,
-//     });
-//   }
-// });
-
 //==================
 //================== Show EventIds belonging to a Calendar ID
 //================== CalendarID will be stored in user cookies
 
-router.post("/getEventsForCal", auth, async (req, res) => {
+router.post("/getEventsForCal", async (req, res) => {
   try {
     const allCalEvents = await Calendar.aggregate([
       { $match: { calId: req.body.calId } },
@@ -151,10 +86,10 @@ router.post("/getEventsForCal", auth, async (req, res) => {
           as: "calendarEvents",
         },
       },
-      //   { $unwind: "$calendarEvents" },
-      { $project: { events: 1 } },
+      // { $unwind: "$calendarEvents" },
+      { $project: { _id: 0 } },
     ]);
-    console.log(allCalEvents);
+
     if (!allCalEvents) {
       return res.json({
         status: "error",
@@ -162,7 +97,7 @@ router.post("/getEventsForCal", auth, async (req, res) => {
       });
     }
 
-    return res.json(allCalEvents);
+    return res.json(allCalEvents[0].calendarEvents);
   } catch (error) {
     console.log(error);
   }
