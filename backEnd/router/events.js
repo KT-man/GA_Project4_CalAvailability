@@ -48,7 +48,7 @@ router.get("/allEvents", async (req, res) => {
 router.patch("/createEvent", async (req, res) => {
   try {
     const createdEvent = await Event.create({
-      id: uuid4(),
+      id: req.body.id,
       title: req.body.title,
       start: req.body.start, // Example Format = YYYY-MM-DDThh:mm:ss
       end: req.body.end, // Example Format = YYYY-MM-DDThh:mm:ss

@@ -85,7 +85,6 @@ export default function CalendarView() {
   };
 
   useEffect(() => {
-    // fetchCalendarCookie();
     fetchCalendarId();
     fetchEvents();
   }, []);
@@ -100,7 +99,6 @@ export default function CalendarView() {
     if (!drawer) {
       // Trigger on drawer open
       console.log(event);
-      console.log(userCookies);
       setDrawerClick(event); // Might be a date Object. Use <obj>.startStr to get start date https://fullcalendar.io/docs/date-object
       // setCurrentEvents(calendarRef.current.getApi().getEvents()); // Get all EVENT Objects in the current calendar, place in atom
 

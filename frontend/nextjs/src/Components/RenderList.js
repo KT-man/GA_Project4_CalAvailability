@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { currentEvent } from "../atoms/currentEvents";
 import { currentClick } from "../atoms/currentClick";
+import { userCookie } from "../atoms/userCookies";
+import { v4 as uuidv4 } from "uuid";
 
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -25,6 +27,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const RenderList = (props) => {
+  const userCookies = useRecoilValue(userCookie);
   const [showNewEventModal, setShowNewEventModal] = useState(false);
   const [showEventDetailsModal, setEventDetailsModal] = useState(false);
   const [showParticipantsModal, setParticipantsModal] = useState(false);
@@ -78,8 +81,10 @@ const RenderList = (props) => {
   const endRef = useRef(currentDate.toISOString().split("T")[0]);
   const descRef = useRef(null);
 
-  const formSubmit = async () => {
+  // =======================createNewEvent will create a event in the event database
+  const createNewEvent = async () => {
     const data = {
+      id: uuidv4(),
       title: titleRef.current.value,
       start: startRef.current.value,
       end: endRef.current.value,
@@ -93,20 +98,32 @@ const RenderList = (props) => {
       headers: { "content-type": "application/json" },
     });
 
-    const resMessage = await res.json();
+    const resJson = await res.json();
 
     // Create new event on Calendar
     // Seems that if dates are input wrongly it will default to a 1h slot
-    if (resMessage.status === "error") {
+    if (resJson.status === "error") {
       alert("Error occurred! Please try adding event again");
       return;
     } else {
+      // Link event to current calendar if it has been successfully created in backend
+      const data2 = { calId: userCookies.cookie_value, id: data.id };
+      const res2 = await fetch(
+        "http://localhost:5001/calendars/addEventToCal",
+        {
+          method: "PATCH",
+          body: JSON.stringify(data2),
+          headers: { "content-type": "application/json" },
+        }
+      );
+      const resJson2 = await res2.json();
+      console.log(resJson2);
+
       props.calendarRef.current.getApi().addEvent(data);
     }
   };
 
   // ============FUNCTION END=====================================================
-  // -------------------
 
   // ============================================
   // ============================================
@@ -197,8 +214,9 @@ const RenderList = (props) => {
               <Button onClick={handleNewEventClick}>Close</Button>
               <Button
                 onClick={() => {
-                  handleNewEventClick();
-                  formSubmit();
+                  handleNewEventClick(); // Close Dialog
+                  createNewEvent(); // Create New Event
+                  // Link Event to Calendar
                 }}
               >
                 Submit
@@ -241,7 +259,7 @@ const RenderList = (props) => {
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                       {`Title: ${event.title}`}
                     </AccordionSummary>
-                    <AccordionDetails>{`Start time: ${event.start}\ End time: ${event.end} Event Description: ${event.extendedProps.description} `}</AccordionDetails>
+                    <AccordionDetails>{`id : ${event.id} Start time: ${event.start}\ End time: ${event.end} Event Description: ${event.extendedProps.description} `}</AccordionDetails>
                   </Accordion>
                 );
               })}
