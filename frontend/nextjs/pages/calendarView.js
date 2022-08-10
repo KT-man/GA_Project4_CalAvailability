@@ -52,14 +52,27 @@ export default function CalendarView() {
   // ============================================
   // ============================================
   // Check if user has calendarId cookie already, if yes, load calendar, else, create new calendarId in cookie
-  // ==============Cookies are not being stored on localhost:3000? Can't find the cookie
   // ============================================
+  // ============================================
+
+  const fetchCalendarCookie = async (url, config) => {
+    try {
+      const url = "http://localhost:3000/api/calendarID";
+      const config = { method: "GET" };
+      const cookieGenerator = await fetch(url, config);
+      const cookieGeneratorData = await cookieGenerator.json();
+      console.log(cookieGeneratorData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchCalendarId = async (url, config) => {
     try {
+      // Go to internal /api/calendarID first to verify if cookie exists
       const url = "http://localhost:5001/calendars/newCalendarId";
       const config = {
-        method: "POST",
+        method: "GET",
       };
       const res = await fetch(url, config);
       const data = await res.json();
@@ -71,6 +84,7 @@ export default function CalendarView() {
   };
 
   useEffect(() => {
+    fetchCalendarCookie();
     fetchCalendarId();
     fetchEvents();
   }, []);

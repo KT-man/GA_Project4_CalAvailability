@@ -40,70 +40,75 @@ router.get("/seedEvents", async (req, res) => {
 //==================
 //================== Adding cookie to users navigating into calendarView
 //==================
-router.post("/newCalendarId", auth, async (req, res) => {
-  try {
-    // Check if there are cookies. If (!undefined = false), create new cookie
-    // if (!req.cookies.calendarId) {
-    //   const calendarUUID = uuid4();
-    //   await res.cookie("calendarId", calendarUUID, {
-    //     secure: false, // true = HTTPS only
-    //     httpOnly: true,
-    //     expires: dayjs().add(30, "days").toDate(), // Expires in 30 days from now
-    //   });
-    //   const newCalendarId = { calId: calendarUUID };
-    //   console.log(newCalendarId);
 
-    //   return await Calendar.create(newCalendarId, (err, data) => {
-    //     if (err) {
-    //       console.log("Error creating new user" + err.message);
-    //       res
-    //         .status(400)
-    //         .json({ status: "error", message: "error encountered" });
-    //     } else {
-    //       return res.json({
-    //         status: "success",
-    //         message: `new calendar created`,
-    //       });
-    //     }
-    //   });
-    // }
-
-    const existingCalendar = await Calendar.findOne({
-      calId: req.cookies.calendarId,
-    });
-
-    if (existingCalendar) {
-      res.cookie("calendarId", existingCalendar.calId, {
-        secure: false,
-        httpOnly: true,
-        expires: dayjs().add(30, "days").toDate(),
-      });
-      return res.json({
-        status: "error",
-        message: "Calendar already exists, loading calendarID...",
-      });
-    }
-
-    await Calendar.create(newCalendarId, (err, data) => {
-      if (err) {
-        console.log("Error creating new user" + err.message);
-        return res
-          .status(400)
-          .json({ status: "error", message: "error encountered" });
-      } else {
-        return res.json({
-          status: "success",
-          message: `new calendar created`,
-        });
-      }
-    });
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(400)
-      .json({ status: "error", message: "an error has occurred" });
-  }
+router.get("/newCalendarId", async (req, res) => {
+  return res.json(req.cookies);
 });
+
+// router.post("/newCalendarId", auth, async (req, res) => {
+//   try {
+//     // Check if there are cookies. If (!undefined = false), create new cookie
+//     if (!req.cookies.calendarId) {
+//       const calendarUUID = uuid4();
+
+//       const newCalendarId = { calId: calendarUUID };
+//       console.log(newCalendarId);
+
+//       return await Calendar.create(newCalendarId, (err, data) => {
+//         if (err) {
+//           console.log("Error creating new user" + err.message);
+//           res
+//             .status(400)
+//             .json({ status: "error", message: "error encountered" });
+//         } else {
+//           return res.json({
+//             status: "success",
+//             message: `new calendar created`,
+//           });
+//         }
+//       });
+//     }
+
+//     const existingCalendar = await Calendar.findOne({
+//       calId: req.cookies.calendarId,
+//     });
+
+//     console.log(existingCalendar);
+
+//     if (existingCalendar) {
+//       res.cookie("calendarId", existingCalendar.calId, {
+//         secure: false,
+//         httpOnly: true,
+//         expires: dayjs().add(30, "days").toDate(),
+//       });
+//       return res.json({
+//         status: "error",
+//         message: "Calendar already exists, loading calendarID...",
+//       });
+//     }
+
+//     await Calendar.create(newCalendarId, (err, data) => {
+//       if (err) {
+//         console.log("Error creating new user" + err.message);
+//         return res
+//           .status(400)
+//           .json({ status: "error", message: "error encountered" });
+//       } else {
+//         return res.json({
+//           status: "success",
+//           message: `new calendar created`,
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).json({
+//       status: "error",
+//       message: "an error has occurred",
+//       error: error,
+//     });
+//   }
+// });
 
 //==================
 //================== Show EventIds belonging to a Calendar ID
