@@ -12,13 +12,15 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { newEventState } from "../src/atoms/newEventSet";
 import { currentEvent } from "../src/atoms/currentEvents";
 import { currentClick } from "../src/atoms/currentClick";
+import { userCookie } from "../src/atoms/userCookies";
 import RenderList from "../src/Components/RenderList";
 
 export default function CalendarView() {
+  const userCookies = useRecoilValue(userCookie);
   const [seedEvents, setSeedEvents] = useState(null);
   const [drawer, setDrawer] = useState(false);
   const [newEvent, setNewEvent] = useRecoilState(newEventState);
@@ -55,24 +57,23 @@ export default function CalendarView() {
   // ============================================
   // ============================================
 
-  const fetchCalendarCookie = async (url, config) => {
-    try {
-      const url = "http://localhost:3000/api/calendarID";
-      const config = { method: "GET" };
-      const cookieGenerator = await fetch(url, config);
-      const cookieGeneratorData = await cookieGenerator.json();
-      console.log(cookieGeneratorData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const fetchCalendarId = async (url, config) => {
     try {
+      // const pageCookie = await fetch("http://localhost:3000/api/calendarID", {
+      //   method: "GET",
+      // }).then((result) => result.json());
+      // Skip this step by fetching cookie and storing in recoil state userCookies
+      // Drawback is must load homepage first before going to the next page
+      const calendarData = {
+        calId: userCookies.cookie_value,
+      };
+
       // Go to internal /api/calendarID first to verify if cookie exists
       const url = "http://localhost:5001/calendars/newCalendarId";
       const config = {
-        method: "GET",
+        method: "POST",
+        body: JSON.stringify(calendarData),
+        headers: { "content-type": "application/json" },
       };
       const res = await fetch(url, config);
       const data = await res.json();
@@ -84,7 +85,7 @@ export default function CalendarView() {
   };
 
   useEffect(() => {
-    fetchCalendarCookie();
+    // fetchCalendarCookie();
     fetchCalendarId();
     fetchEvents();
   }, []);
@@ -99,6 +100,7 @@ export default function CalendarView() {
     if (!drawer) {
       // Trigger on drawer open
       console.log(event);
+      console.log(userCookies);
       setDrawerClick(event); // Might be a date Object. Use <obj>.startStr to get start date https://fullcalendar.io/docs/date-object
       // setCurrentEvents(calendarRef.current.getApi().getEvents()); // Get all EVENT Objects in the current calendar, place in atom
 

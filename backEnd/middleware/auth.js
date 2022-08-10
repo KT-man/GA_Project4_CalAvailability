@@ -1,7 +1,11 @@
 const auth = (req, res, next) => {
   try {
-    console.log(req.cookies);
-    next();
+    if (req.cookies.calendarId) {
+      next();
+    } else {
+      return res.json("cookie not found");
+      console.log("cookie not found");
+    }
     // const calId = req.cookies;
 
     // if (token) {

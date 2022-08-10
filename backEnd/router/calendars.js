@@ -41,8 +41,33 @@ router.get("/seedEvents", async (req, res) => {
 //================== Adding cookie to users navigating into calendarView
 //==================
 
-router.get("/newCalendarId", async (req, res) => {
-  return res.json(req.cookies);
+router.post("/newCalendarId", async (req, res) => {
+  try {
+    const searchCalendars = await Calendar.findOne({
+      calId: req.body.calId,
+    });
+
+    if (searchCalendars) {
+      res.json({
+        status: "ok",
+        message: `calendar ${req.body.calId} found, loading...`,
+      });
+    } else {
+      const newCalendar = await Calendar.create(req.body, (err, data) => {
+        if (err) {
+          console.log("error" + err.message);
+          res
+            .status(400)
+            .json({ status: "error", message: "error encountered" });
+        } else {
+          return res.json({
+            status: "ok!",
+            message: `calendar ${req.body.calId} created!`,
+          });
+        }
+      });
+    }
+  } catch (error) {}
 });
 
 // router.post("/newCalendarId", auth, async (req, res) => {
