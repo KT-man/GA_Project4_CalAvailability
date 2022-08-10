@@ -1,4 +1,4 @@
-//rewrites not working? Can only have 1 module exports unless find where withTM is imported
+//rewrites not working..? Can only have 1 module exports
 
 const rewrites = {
   async rewrites() {

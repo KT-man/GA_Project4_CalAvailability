@@ -88,9 +88,8 @@ export default function CalendarView() {
       setDrawerClick(event); // Might be a date Object. Use <obj>.startStr to get start date https://fullcalendar.io/docs/date-object
       // setCurrentEvents(calendarRef.current.getApi().getEvents()); // Get all EVENT Objects in the current calendar, place in atom
 
-      const tester = calendarRef.current.getApi().getEvents();
-      console.log(tester);
-      setCurrentEvents(calendarRef.current.getApi().getEvents());
+      // const tester = calendarRef.current.getApi().getEvents();
+      // setCurrentEvents(...calendarRef.current.getApi().getEvents());
     }
   };
 

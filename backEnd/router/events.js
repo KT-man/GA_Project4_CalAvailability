@@ -48,7 +48,7 @@ router.get("/allEvents", async (req, res) => {
 router.patch("/createEvent", async (req, res) => {
   try {
     const createdEvent = await Event.create({
-      id: uuid4(),
+      eventId: uuid4(),
       title: req.body.title,
       start: req.body.start, // Example Format = YYYY-MM-DDThh:mm:ss
       end: req.body.end, // Example Format = YYYY-MM-DDThh:mm:ss
@@ -78,7 +78,7 @@ router.patch("/createEvent", async (req, res) => {
 router.delete("/deleteEvent", async (req, res) => {
   try {
     const findEvent = await Event.findOne({
-      id: req.body.id,
+      eventId: req.body.eventId,
     });
 
     if (!findEvent) {
@@ -88,7 +88,7 @@ router.delete("/deleteEvent", async (req, res) => {
     }
 
     const deleteEvent = await Event.findOneAndDelete({
-      id: req.body.id,
+      eventId: req.body.eventId,
     });
 
     res.json({ status: "ok", message: `event has been deleted` });
