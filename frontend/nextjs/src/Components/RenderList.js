@@ -5,6 +5,8 @@ import { currentClick } from "../atoms/currentClick";
 import { userCookie } from "../atoms/userCookies";
 import { v4 as uuidv4 } from "uuid";
 
+import NewEventDialog from "./NewEventDialog";
+
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
@@ -84,7 +86,6 @@ const RenderList = (props) => {
   // =======================createNewEvent will create a event in the event database
   const createNewEvent = async () => {
     const data = {
-      _id: "lame",
       id: uuidv4(),
       title: titleRef.current.value,
       start: startRef.current.value,
@@ -166,65 +167,16 @@ const RenderList = (props) => {
   return (
     <Box sx={{ width: 350 }} role="presentation">
       <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={handleNewEventClick}>
-            <ListItemIcon>Blank</ListItemIcon>
-            <ListItemText primary="New Event" />
-          </ListItemButton>
-          <Dialog open={showNewEventModal} onClose={handleNewEventClick}>
-            <DialogTitle>Create New Event</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Please enter your event details below!
-              </DialogContentText>
-              <TextField
-                sx={{ m: 1 }}
-                id="EventTitle"
-                label="Event Title"
-                type="text"
-                fullWidth
-                inputRef={titleRef}
-              />
-              <TextField
-                sx={{ m: 1 }}
-                id="starttime"
-                type="datetime-local"
-                label="Start Time"
-                inputRef={startRef}
-                defaultValue={currentDate
-                  .toISOString()
-                  .replace(/..\d.\d+Z$/g, "")}
-              />
-              <TextField
-                sx={{ m: 1 }}
-                label="End Time"
-                id="endtime"
-                type="datetime-local"
-                inputRef={endRef}
-              />
-              <TextField
-                sx={{ m: 1 }}
-                id="EventDescription"
-                label="Event Description"
-                type="text"
-                fullWidth
-                inputRef={descRef}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleNewEventClick}>Close</Button>
-              <Button
-                onClick={() => {
-                  handleNewEventClick(); // Close Dialog
-                  createNewEvent(); // Create New Event
-                  // Link Event to Calendar
-                }}
-              >
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </ListItem>
+        <NewEventDialog
+          handleNewEventClick={handleNewEventClick}
+          showNewEventModal={showNewEventModal}
+          createNewEvent={createNewEvent}
+          calendarRef={props.calendarRef}
+          titleRef={titleRef}
+          startRef={startRef}
+          endRef={endRef}
+          descRef={descRef}
+        ></NewEventDialog>
         {/* End of First Button  */}
         {/* End of First Button  */}
         {/* ======================================================================= */}
