@@ -25,8 +25,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import EventDetailsDialog from "./EventDetailsDialog";
 
 const RenderList = (props) => {
   const userCookies = useRecoilValue(userCookie);
@@ -182,7 +182,14 @@ const RenderList = (props) => {
         {/* ======================================================================= */}
         {/* Start of Second Button */}
         {/* Start of Second Button */}
-        <ListItem disablePadding>
+        <EventDetailsDialog
+          handleEventDetails={handleEventDetails}
+          showDetailsOfEvents={showDetailsOfEvents}
+          showEventDetailsModal={showEventDetailsModal}
+          calendarRef={props.calendarRef}
+        ></EventDetailsDialog>
+
+        {/* <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
               handleEventDetails();
@@ -221,7 +228,6 @@ const RenderList = (props) => {
                         ></ListItemText>
                       </List>
                     </AccordionDetails>
-                    {/* {`id : ${event.id} Start time: ${event.start}\ End time: ${event.end} Event Description: ${event.extendedProps.description} `} */}
                   </Accordion>
                 );
               })}
@@ -236,7 +242,7 @@ const RenderList = (props) => {
               </Button>
             </DialogActions>
           </Dialog>
-        </ListItem>
+        </ListItem> */}
         {/* End of Second Button */}
         {/* End of Second Button */}
         {/* ======================================================================= */}

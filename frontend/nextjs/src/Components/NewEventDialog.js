@@ -1,9 +1,4 @@
 import React, { useRef } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { currentEvent } from "../atoms/currentEvents";
-import { currentClick } from "../atoms/currentClick";
-import { userCookie } from "../atoms/userCookies";
-import { v4 as uuidv4 } from "uuid";
 
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -18,11 +13,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 const NewEventDialog = (props) => {
-  // ============================================
-  // ============================================
-  // Creating new event (Button 1)
-  // ============================================
-  // ============================================
   const currentDate = new Date();
   return (
     <>
