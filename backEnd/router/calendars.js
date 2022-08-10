@@ -43,30 +43,30 @@ router.get("/seedEvents", async (req, res) => {
 router.post("/newCalendarId", auth, async (req, res) => {
   try {
     // Check if there are cookies. If (!undefined = false), create new cookie
-    if (!req.cookies.calendarId) {
-      const calendarUUID = uuid4();
-      await res.cookie("calendarId", calendarUUID, {
-        secure: false, // true = HTTPS only
-        httpOnly: true,
-        expires: dayjs().add(30, "days").toDate(), // Expires in 30 days from now
-      });
-      const newCalendarId = { calId: calendarUUID };
-      console.log(newCalendarId);
+    // if (!req.cookies.calendarId) {
+    //   const calendarUUID = uuid4();
+    //   await res.cookie("calendarId", calendarUUID, {
+    //     secure: false, // true = HTTPS only
+    //     httpOnly: true,
+    //     expires: dayjs().add(30, "days").toDate(), // Expires in 30 days from now
+    //   });
+    //   const newCalendarId = { calId: calendarUUID };
+    //   console.log(newCalendarId);
 
-      return await Calendar.create(newCalendarId, (err, data) => {
-        if (err) {
-          console.log("Error creating new user" + err.message);
-          res
-            .status(400)
-            .json({ status: "error", message: "error encountered" });
-        } else {
-          return res.json({
-            status: "success",
-            message: `new calendar created`,
-          });
-        }
-      });
-    }
+    //   return await Calendar.create(newCalendarId, (err, data) => {
+    //     if (err) {
+    //       console.log("Error creating new user" + err.message);
+    //       res
+    //         .status(400)
+    //         .json({ status: "error", message: "error encountered" });
+    //     } else {
+    //       return res.json({
+    //         status: "success",
+    //         message: `new calendar created`,
+    //       });
+    //     }
+    //   });
+    // }
 
     const existingCalendar = await Calendar.findOne({
       calId: req.cookies.calendarId,

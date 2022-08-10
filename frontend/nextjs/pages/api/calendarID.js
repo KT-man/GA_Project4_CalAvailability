@@ -6,13 +6,15 @@ import {
   deleteCookie,
   hasCookie,
 } from "cookies-next";
+const { v4: uuid4 } = require("uuid");
 
 export default async function handler(req, res) {
-  setCookie("server-key", "value", { req, res, maxAge: 60 * 60 * 24 * 30 });
+  // Checks if cookie is there, if not, create cookie
+  if (!getCookie("calendarId", { req, res })) {
+    setCookie("calendarId", uuid4(), { req, res, maxAge: 60 * 60 * 24 * 30 });
+  }
 
-  //   return res.json(getCookies({ req, res }));
+  return res.json(getCookie("calendarId", { req, res }));
   //   getCookies({ req, res });
   deleteCookie("cookie2", { req, res });
-
-  return res.status(200).json({ message: "ok" });
 }
