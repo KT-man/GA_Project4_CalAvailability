@@ -29,7 +29,6 @@ const RenderList = (props) => {
   const [showEventDetailsModal, setEventDetailsModal] = useState(false);
   const [showParticipantsModal, setParticipantsModal] = useState(false);
   const [showDeleteModal, setDeleteModal] = useState(false);
-  const [dailyEvents, setDailyEvents] = useState([]);
 
   const [currentEvents, setCurrentEvents] = useRecoilState(currentEvent);
 
@@ -116,14 +115,12 @@ const RenderList = (props) => {
 
   const showDetailsOfEvents = () => {
     // Filter out for events in clicked month first
-    // console.log(drawerClick.startStr);
+    console.log(drawerClick.startStr);
     const allEvents = props.calendarRef.current.getApi().getEvents();
 
     const eventsOnDay = allEvents.filter((event) => {
       return event.startStr.split("T")[0] === drawerClick.startStr;
     });
-
-    setDailyEvents(eventsOnDay);
   };
 
   // ============================================
@@ -195,7 +192,7 @@ const RenderList = (props) => {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleNewEventClick}>Close</Button>
+              <Button onClick={handleNewEventClick}>Cancel</Button>
               <Button
                 onClick={() => {
                   handleNewEventClick();
@@ -223,30 +220,22 @@ const RenderList = (props) => {
             <ListItemText primary="Show Event Details for Today!" />
           </ListItemButton>
           <Dialog open={showEventDetailsModal} onClose={handleEventDetails}>
-            <DialogTitle>
-              Calendar Details for {drawerClick.startStr}
-            </DialogTitle>
+            <DialogTitle>Event Details for "Day"</DialogTitle>
             <DialogContent>
-              <Accordion disabled>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  {dailyEvents.length > 0
-                    ? `Event Details`
-                    : `You have no events available, maybe create one?`}
-                </AccordionSummary>
+              <Accordion>
+                <AccordionSummary></AccordionSummary>
+                <AccordionDetails></AccordionDetails>
               </Accordion>
-              {dailyEvents.map((event) => {
-                return (
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      {`Title: ${event.title}`}
-                    </AccordionSummary>
-                    <AccordionDetails>{`Start time: ${event.start}\ End time: ${event.end} Event Description: ${event.extendedProps.description} `}</AccordionDetails>
-                  </Accordion>
-                );
-              })}
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleEventDetails}>Close</Button>
+              <Button onClick={handleNewEventClick}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  handleEventDetails();
+                }}
+              >
+                Submit
+              </Button>
             </DialogActions>
           </Dialog>
         </ListItem>
