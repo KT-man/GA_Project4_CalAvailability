@@ -34,12 +34,9 @@ const EventDetailsDialog = (props) => {
   // ============================================
 
   const getDetailsOfEventsOnDay = () => {
-    console.log(drawerClick.start);
     const allEvents = props.calendarRef.current.getApi().getEvents();
 
     const eventsOnDay = allEvents.filter((event) => {
-      console.log(event.startStr);
-      console.log(event.endStr);
       return event.startStr.split("T")[0] === drawerClick.startStr;
     });
     setDailyEvents(eventsOnDay);

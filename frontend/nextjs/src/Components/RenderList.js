@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 
-import { currentClick } from "../atoms/currentClick";
 import { userCookie } from "../atoms/userCookies";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,10 +8,6 @@ import NewEventDialog from "./NewEventDialog";
 
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import EventDetailsDialog from "./EventDetailsDialog";
 import AddParticipantsDialog from "./AddParticipantsDialog";
@@ -22,10 +17,6 @@ const RenderList = (props) => {
   const [showNewEventModal, setShowNewEventModal] = useState(false);
   const [showEventDetailsModal, setEventDetailsModal] = useState(false);
   const [showParticipantsModal, setParticipantsModal] = useState(false);
-
-  const [dailyEvents, setDailyEvents] = useState([]);
-
-  const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
 
   // ============================================
   // ============================================
@@ -94,7 +85,6 @@ const RenderList = (props) => {
         }
       );
       const resJson2 = await res2.json();
-      console.log(resJson2);
 
       props.calendarRef.current.getApi().addEvent(data);
     }

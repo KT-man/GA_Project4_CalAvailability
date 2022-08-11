@@ -72,8 +72,6 @@ export default function CalendarView() {
       };
       const res = await fetch(url, config);
       const data = await res.json();
-
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -138,7 +136,7 @@ export default function CalendarView() {
       <Container maxWidth="xl">
         <Box sx={{ my: 2, mx: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Next.js example
+            Your Calendar
           </Typography>
           <Link href="/" color="primary">
             Back to homepage

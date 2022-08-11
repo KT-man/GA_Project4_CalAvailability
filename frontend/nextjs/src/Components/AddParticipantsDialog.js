@@ -41,7 +41,6 @@ const AddParticipantsDialog = (props) => {
   // ============================================
 
   const getDetailsOfEventsOnDay = () => {
-    console.log(drawerClick.start);
     const allEvents = props.calendarRef.current.getApi().getEvents();
 
     const eventsOnDay = allEvents.filter((event) => {
@@ -90,9 +89,6 @@ const AddParticipantsDialog = (props) => {
     };
     const res = await fetch(url, config);
     const returnData = await res.json();
-
-    console.log(eventId);
-    console.log(returnData);
   };
 
   return (

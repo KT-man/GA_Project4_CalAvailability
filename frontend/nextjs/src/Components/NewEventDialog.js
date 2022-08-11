@@ -17,8 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 const NewEventDialog = (props) => {
   const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
   const clickedDate = new Date(drawerClick.startStr);
-  console.log(clickedDate.toISOString());
-  const currentDate = new Date();
+
   return (
     <>
       <ListItem disablePadding>

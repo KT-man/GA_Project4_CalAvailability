@@ -19,7 +19,6 @@ export default function Index() {
       const cookieGenerator = await fetch(url, config);
       const cookieGeneratorData = await cookieGenerator.json();
       setUserCookies(cookieGeneratorData);
-      console.log(userCookies);
     } catch (error) {
       console.log(error);
     }
@@ -38,9 +37,6 @@ export default function Index() {
           <Typography variant="h4" component="h1" gutterBottom>
             Calendar App
           </Typography>
-          <Link href="/about" color="secondary">
-            Go to the about page
-          </Link>
           <br></br>
           <Link href="/calendarView" color="primary">
             View your calendar here!
