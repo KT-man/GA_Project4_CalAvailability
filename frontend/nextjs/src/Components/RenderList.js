@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { currentEvent } from "../atoms/currentEvents";
+
 import { currentClick } from "../atoms/currentClick";
 import { userCookie } from "../atoms/userCookies";
 import { v4 as uuidv4 } from "uuid";
@@ -35,7 +35,6 @@ const RenderList = (props) => {
   const [showParticipantsModal, setParticipantsModal] = useState(false);
   const [showDeleteModal, setDeleteModal] = useState(false);
 
-  const [currentEvents, setCurrentEvents] = useRecoilState(currentEvent);
   const [dailyEvents, setDailyEvents] = useState([]);
 
   const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
@@ -90,7 +89,7 @@ const RenderList = (props) => {
       title: titleRef.current.value,
       start: startRef.current.value,
       end: endRef.current.value,
-      extendedProps: { description: descRef.current.value },
+      extendedProps: { description: descRef.current.value, attendees: null },
     };
 
     // Create new event in backend

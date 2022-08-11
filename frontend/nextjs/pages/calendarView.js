@@ -13,7 +13,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { newEventState } from "../src/atoms/newEventSet";
+
 import { currentEvent } from "../src/atoms/currentEvents";
 import { currentClick } from "../src/atoms/currentClick";
 import { userCookie } from "../src/atoms/userCookies";
@@ -23,8 +23,8 @@ export default function CalendarView() {
   const userCookies = useRecoilValue(userCookie);
   const [seedEvents, setSeedEvents] = useState(null);
   const [drawer, setDrawer] = useState(false);
-  const [newEvent, setNewEvent] = useRecoilState(newEventState);
-  const [currentEvents, setCurrentEvents] = useRecoilState(currentEvent);
+
+  const [calendarEvents, setCalendarEvents] = useRecoilState(currentEvent);
   const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
 
   const calendarRef = useRef();
@@ -161,12 +161,7 @@ export default function CalendarView() {
 
   // ============FUNCTION END=====================================================
   // -------------------
-  const handleEvents = (events) => {
-    // console.log(events);
-    // console.log(events[1].start);
 
-    setCurrentEvents(events);
-  };
   // ============FUNCTION END=====================================================
   // -------------------
 
@@ -213,7 +208,7 @@ export default function CalendarView() {
             dayMaxEvents={true}
             fixedWeekCount={false}
             // events={seedEvents} // ======= Change this first to read from server Removed to read calendar events only
-            eventsSet={handleEvents}
+            // eventsSet={handleEvents}
             select={toggleDrawer}
             eventClick={handleEventClick}
             eventContent={showEventContent}
