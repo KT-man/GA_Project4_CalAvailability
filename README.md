@@ -12,6 +12,11 @@ Cal Availability is a simple application for users to create and store upcoming 
 
 <img width="1361" alt="image" src="https://user-images.githubusercontent.com/89538905/184193520-3b631550-ec1b-4d84-b6f1-65e16737f00b.png">
 
+- Emails sent with SendGrid
+<img width="1108" alt="image" src="https://user-images.githubusercontent.com/89538905/184196483-4ac672e7-4c0e-4301-9e1f-147f90c99143.png">
+
+
+
 
 ## Stack and Library used  
 - MongoDB
