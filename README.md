@@ -3,21 +3,22 @@
 ## Project Intro
 Cal Availability is a simple application for users to create and store upcoming events onto their calendars.
 - Users can click onto any available date and perform the following actions: 
-- Create New Event
+- Create New Events
 - View Event Details for any particular day 
-- 
-
+- Invite participants to the event and to create their events on the calendar app! 
+- (In development) To allow users to collaborate and indicate who is attending a event 
 
 --- 
 
-<img width="1365" alt="image" src="https://user-images.githubusercontent.com/89538905/183824573-798ab296-9429-4681-9519-d4ab04907180.png">
+<img width="1361" alt="image" src="https://user-images.githubusercontent.com/89538905/184193520-3b631550-ec1b-4d84-b6f1-65e16737f00b.png">
 
 
-## Libraries used 
-- ReactJS
-- Recoil
-- Material UI 
-- Django
-- 
+## Stack and Library used  
+- MongoDB
+- ExpressJS
+- NextJS
+- NodeJS
+- Recoil (State Management Library)
+- Material UI (Component Library)
+- Full Calendar (Calendar Library)
 
-- 
