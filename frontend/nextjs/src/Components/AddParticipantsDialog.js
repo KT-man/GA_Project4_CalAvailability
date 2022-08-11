@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
-import { useRecoilState } from "recoil";
+import React, { useState, useRef } from "react";
+import { useRecoilValue } from "recoil";
 import { currentClick } from "../atoms/currentClick";
+import EditParticipantsButton from "./EditParticipantsButton";
 
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -11,17 +12,78 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+
 const AddParticipantsDialog = (props) => {
-  const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
+  const drawerClick = useRecoilValue(currentClick);
+  const [dailyEvents, setDailyEvents] = useState([]);
   const clickedDate = new Date(drawerClick.startStr);
+  const [showParticipantEmailInput, setShowParticipantEmailInput] =
+    useState(false);
+
+  const handleParticipantEmail = () => {
+    setShowParticipantEmailInput(!showParticipantEmailInput);
+  };
+
+  // ============================================
+  // ============================================
+  // Get chosen day event details
+  // ============================================
+  // ============================================
+
+  const getDetailsOfEventsOnDay = () => {
+    console.log(drawerClick.start);
+    const allEvents = props.calendarRef.current.getApi().getEvents();
+
+    const eventsOnDay = allEvents.filter((event) => {
+      return event.startStr.split("T")[0] === drawerClick.startStr;
+    });
+    setDailyEvents(eventsOnDay);
+  };
+
+  // ============================================
+  // ============================================
+  // Edit Participants
+  // ============================================
+  // ============================================
+
+  const editParticipants = async (eventId) => {
+    console.log(typeof props.participantRef.current.value);
+    let transformedEmails = props.participantRef.current.value;
+    console.log(transformedEmails);
+    transformedEmails = transformedEmails.split(",");
+
+    const data = { id: eventId, email: transformedEmails };
+
+    const url = "http://localhost:5001/events/addEmailToEvent";
+    const config = {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: { "content-type": "application/json" },
+    };
+
+    const res = await fetch(url, config);
+    const returned = await res.json();
+  };
 
   return (
     <>
       <ListItem disablePadding>
-        <ListItemButton onClick={props.handleParticipantsClick}>
+        <ListItemButton
+          onClick={() => {
+            props.handleParticipantsClick();
+            getDetailsOfEventsOnDay();
+          }}
+        >
           <ListItemIcon>Blank</ListItemIcon>
           <ListItemText primary="Add Participants" />
         </ListItemButton>
@@ -29,16 +91,18 @@ const AddParticipantsDialog = (props) => {
           open={props.showParticipantsModal}
           onClose={props.handleParticipantsClick}
         >
-          <DialogTitle>Calendar Details for {drawerClick.startStr}</DialogTitle>
+          <DialogTitle>
+            Invite friends for events on {drawerClick.startStr}!
+          </DialogTitle>
           <DialogContent>
             {dailyEvents.length > 0
               ? ``
-              : `You have no events available, maybe create some?`}
+              : `You have no events available, maybe create some first before inviting your friends?`}
 
             {dailyEvents.map((event) => {
               return (
                 <>
-                  Event Details for <strong>{event.title}</strong>
+                  Attendee details for <strong>{event.title}</strong>
                   <Accordion key={event.id} expanded="false">
                     <AccordionSummary>
                       <Table>
@@ -47,9 +111,9 @@ const AddParticipantsDialog = (props) => {
                             <TableCell align="center">Start Time</TableCell>
                             <TableCell align="center">End Time</TableCell>
                             <TableCell align="justify">
-                              Event Description
+                              Event Participants
                             </TableCell>
-                            <TableCell>Delete</TableCell>
+                            <TableCell>Invite Partcipants</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -60,17 +124,59 @@ const AddParticipantsDialog = (props) => {
                           <TableCell>
                             {event.endStr.split("T")[1].slice(0, 5)}
                           </TableCell>
-                          <TableCell width={300} align="justify">
-                            {event.extendedProps.description}
-                          </TableCell>
-                          <TableCell>
-                            <DeleteButton
-                              id={event.id}
-                              title={event.title}
-                              calendarRef={props.calendarRef}
-                              handleEventDetails={props.handleEventDetails}
-                            ></DeleteButton>
-                          </TableCell>
+                          {/* Show this if user has not clicked on "Edit Participants" */}
+                          {!showParticipantEmailInput && (
+                            <>
+                              <TableCell width={300} align="left">
+                                {event.extendedProps.attendees.length > 0
+                                  ? event.extendedProps.attendees.map(
+                                      (attendee) => {
+                                        return <div>{attendee.email}</div>;
+                                      }
+                                    )
+                                  : "No participants yet"}
+                              </TableCell>
+                              <TableCell>
+                                <EditParticipantsButton
+                                  handleParticipantEmail={
+                                    handleParticipantEmail
+                                  }
+                                />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{ m: 1 }}
+                                >
+                                  Send email to participants
+                                </Button>
+                              </TableCell>
+                            </>
+                          )}
+                          {/* Show this if User wants to Edit Participants */}
+                          {showParticipantEmailInput && (
+                            <>
+                              <TableCell width={300}>
+                                <TextField
+                                  id="Paricipants"
+                                  label="Invite Participants"
+                                  type="text"
+                                  inputRef={props.participantRef}
+                                ></TextField>
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  color="primary"
+                                  variant="contained"
+                                  onClick={() => {
+                                    editParticipants(event.id);
+                                    handleParticipantEmail();
+                                  }}
+                                >
+                                  Submit
+                                </Button>
+                              </TableCell>
+                            </>
+                          )}
                         </TableBody>
                       </Table>
                     </AccordionSummary>
@@ -82,7 +188,7 @@ const AddParticipantsDialog = (props) => {
           <DialogActions>
             <Button
               onClick={() => {
-                props.handleEventDetails();
+                props.handleParticipantsClick();
               }}
             >
               Close

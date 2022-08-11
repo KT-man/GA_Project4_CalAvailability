@@ -4,8 +4,8 @@ const seedEvents = [
   {
     id: uuidv4(),
     title: "testEvent1",
-    start: "2022-08-01",
-    end: "2022-08-01",
+    start: "2022-08-10T12:00:00",
+    end: "2022-08-10T14:00:00",
     extendedProps: {
       description: "This is a event created for testing purposes ",
       attendees: [

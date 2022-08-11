@@ -2,12 +2,10 @@ require("dotenv").config();
 
 const express = require("express");
 const Event = require("../models/Event");
-const jwt = require("jsonwebtoken");
-const { v4: uuid4 } = require("uuid");
-const auth = require("../middleware/auth");
 const router = express.Router();
-const bcrypt = require("bcrypt");
 const seedEvents = require("./seedEvent");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const app = express();
 const { body, validationResult } = require("express-validator");
@@ -100,6 +98,49 @@ router.delete("/deleteEvent", async (req, res) => {
       error: error,
     });
   }
+});
+
+//==================
+//================== Add participants email to event
+//==================
+
+router.patch("/addEmailToEvent", (req, res) => {
+  const editedParticipantsPromises = req.body.email.map((email) => {
+    return Event.findOneAndUpdate(
+      { id: req.body.id },
+      { $push: { "extendedProps.attendees": [{ email }] } }
+    );
+  });
+
+  Promise.all(editedParticipantsPromises).then((values) => {
+    return res.json(values);
+  });
+});
+
+//==================
+//================== Add participants email to event
+//==================
+router.get("/sendEmailToParticipants", async (req, res) => {
+  const eventToSend = await Event.findOne({
+    id: req.body.id,
+  });
+
+  const msg = {
+    to: "abc", // Change to your recipient
+    from: process.env.SENDGRID_EMAIL, // Change to your verified sender
+    subject: req.body.title,
+    text: "",
+    html: "",
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+      res.json({ status: "ok", message: `email sent to ${email}` });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
 
 module.exports = router;

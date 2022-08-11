@@ -78,7 +78,6 @@ const NewEventDialog = (props) => {
               onClick={() => {
                 props.handleNewEventClick(); // Close Dialog
                 props.createNewEvent(); // Create New Event
-                // Link Event to Calendar
               }}
             >
               Submit

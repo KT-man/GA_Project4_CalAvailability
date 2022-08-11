@@ -56,6 +56,7 @@ const RenderList = (props) => {
   const startRef = useRef(currentDate.toISOString().replace(/..\d.\d+Z$/g, ""));
   const endRef = useRef(currentDate.toISOString().split("T")[0]);
   const descRef = useRef(null);
+  const participantRef = useRef(null);
 
   // =======================createNewEvent will create a event in the event database
   const createNewEvent = async () => {
@@ -64,7 +65,7 @@ const RenderList = (props) => {
       title: titleRef.current.value,
       start: startRef.current.value,
       end: endRef.current.value,
-      extendedProps: { description: descRef.current.value, attendees: null },
+      extendedProps: { description: descRef.current.value, attendees: [] },
     };
 
     // Create new event in backend
@@ -129,10 +130,12 @@ const RenderList = (props) => {
         {/* ======================================================================= */}
         {/* Start of Third Button */}
         {/* Start of Third Button */}
-        {/* <AddParticipantsDialog
+        <AddParticipantsDialog
           handleParticipantsClick={handleParticipantsClick}
           showParticipantsModal={showParticipantsModal}
-        /> */}
+          calendarRef={props.calendarRef}
+          participantRef={participantRef}
+        />
       </List>
 
       <Divider />
