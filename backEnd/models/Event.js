@@ -6,13 +6,12 @@ const EventSchema = new mongoose.Schema(
     title: { type: String, required: true },
     start: { type: String, required: true },
     end: { type: String, required: true },
-
     extendedProps: {
       description: { type: String },
       attendees: [
         {
           email: { type: String },
-          isAttending: { type: Boolean },
+          isAttending: { type: Boolean, default: false },
         },
       ],
     },

@@ -53,8 +53,8 @@ router.patch("/createEvent", async (req, res) => {
       start: req.body.start, // Example Format = YYYY-MM-DDThh:mm:ss
       end: req.body.end, // Example Format = YYYY-MM-DDThh:mm:ss
       extendedProps: {
-        description: req.body.description,
-        attendees: req.body.attendees,
+        description: req.body.extendedProps.description,
+        attendees: req.body.extendedProps.attendees,
       },
     });
 

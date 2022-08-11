@@ -1,34 +1,27 @@
 import React, { useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { currentClick } from "../atoms/currentClick";
 import DeleteButton from "./DeleteButton";
 
-import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 
 const EventDetailsDialog = (props) => {
   const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
@@ -60,7 +53,7 @@ const EventDetailsDialog = (props) => {
           }}
         >
           <ListItemIcon>Blank</ListItemIcon>
-          <ListItemText primary="Show Event Details for Today!" />
+          <ListItemText primary="Show Event Details" />
         </ListItemButton>
         <Dialog
           open={props.showEventDetailsModal}
@@ -69,29 +62,24 @@ const EventDetailsDialog = (props) => {
           <DialogTitle>Calendar Details for {drawerClick.startStr}</DialogTitle>
           <DialogContent>
             {dailyEvents.length > 0
-              ? `Event Details`
+              ? ``
               : `You have no events available, maybe create some?`}
 
             {dailyEvents.map((event) => {
               return (
                 <>
-                  <Accordion disabled>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      {dailyEvents.length > 0
-                        ? "Wass"
-                        : `You have no events available, maybe create one?`}
-                    </AccordionSummary>
-                  </Accordion>
+                  Event Details for <strong>{event.title}</strong>
                   <Accordion key={event.id} expanded="false">
                     <AccordionSummary>
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell>Start Time</TableCell>
-                            <TableCell>End Time</TableCell>
-                            <TableCell>Event Description</TableCell>
-                            <TableCell>Attendees</TableCell>
-                            <TableCell>Delete?</TableCell>
+                            <TableCell align="center">Start Time</TableCell>
+                            <TableCell align="center">End Time</TableCell>
+                            <TableCell align="justify">
+                              Event Description
+                            </TableCell>
+                            <TableCell>Delete</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -102,8 +90,9 @@ const EventDetailsDialog = (props) => {
                           <TableCell>
                             {event.endStr.split("T")[1].slice(0, 5)}
                           </TableCell>
-                          <TableCell>what</TableCell>
-                          <TableCell>Attend</TableCell>
+                          <TableCell width={300} align="justify">
+                            {event.extendedProps.description}
+                          </TableCell>
                           <TableCell>
                             <DeleteButton
                               id={event.id}

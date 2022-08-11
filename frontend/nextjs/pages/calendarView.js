@@ -125,14 +125,8 @@ export default function CalendarView() {
       // Trigger on drawer open
       console.log(event);
       setDrawerClick(event); // Might be a date Object. Use <obj>.startStr to get start date https://fullcalendar.io/docs/date-object
-      // setCurrentEvents(calendarRef.current.getApi().getEvents()); // Get all EVENT Objects in the current calendar, place in atom
-
-      // const tester = calendarRef.current.getApi().getEvents();
-      // setCurrentEvents(...calendarRef.current.getApi().getEvents());
     }
   };
-
-  // Have to compare strings for dates, and then to figure out how to display more data
 
   // ============================================
   // ============================================
@@ -151,16 +145,6 @@ export default function CalendarView() {
       clickedEvent.event.remove();
     }
   };
-
-  // ============FUNCTION END=====================================================
-  // -------------------
-
-  function showEventContent(eventInfo) {
-    // console.log(eventInfo);
-  }
-
-  // ============FUNCTION END=====================================================
-  // -------------------
 
   // ============FUNCTION END=====================================================
   // -------------------
@@ -210,8 +194,7 @@ export default function CalendarView() {
             // events={seedEvents} // ======= Change this first to read from server Removed to read calendar events only
             // eventsSet={handleEvents}
             select={toggleDrawer}
-            eventClick={handleEventClick}
-            eventContent={showEventContent}
+            // eventContent={showEventContent}
           ></FullCalendar>
 
           {/* ============================================

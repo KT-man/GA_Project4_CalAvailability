@@ -14,7 +14,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const NewEventDialog = (props) => {
+const AddParticipantsDialog = (props) => {
   const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
   const clickedDate = new Date(drawerClick.startStr);
   console.log(clickedDate.toISOString());
@@ -90,4 +90,4 @@ const NewEventDialog = (props) => {
   );
 };
 
-export default NewEventDialog;
+export default AddParticipantsDialog;
