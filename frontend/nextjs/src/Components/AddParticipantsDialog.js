@@ -57,9 +57,8 @@ const AddParticipantsDialog = (props) => {
   // ============================================
 
   const editParticipants = async (eventId) => {
-    console.log(typeof props.participantRef.current.value);
+    // Still have to fix issue of multiple edits not working
     let transformedEmails = props.participantRef.current.value;
-    console.log(transformedEmails);
     transformedEmails = transformedEmails.split(",");
 
     const data = { id: eventId, email: transformedEmails };
@@ -73,6 +72,27 @@ const AddParticipantsDialog = (props) => {
 
     const res = await fetch(url, config);
     const returned = await res.json();
+  };
+
+  // ============================================
+  // ============================================
+  // Send email to participants
+  // ============================================
+  // ============================================
+  const sendEmailToParticipants = async (eventId) => {
+    const data = { id: eventId };
+
+    const url = "http://localhost:5001/events/sendEmailToParticipants";
+    const config = {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "content-type": "application/json" },
+    };
+    const res = await fetch(url, config);
+    const returnData = await res.json();
+
+    console.log(eventId);
+    console.log(returnData);
   };
 
   return (
@@ -146,6 +166,9 @@ const AddParticipantsDialog = (props) => {
                                   variant="contained"
                                   color="primary"
                                   sx={{ m: 1 }}
+                                  onClick={() => {
+                                    sendEmailToParticipants(event.id);
+                                  }}
                                 >
                                   Send email to participants
                                 </Button>

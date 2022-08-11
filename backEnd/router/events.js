@@ -120,26 +120,55 @@ router.patch("/addEmailToEvent", (req, res) => {
 //==================
 //================== Add participants email to event
 //==================
-router.get("/sendEmailToParticipants", async (req, res) => {
+router.post("/sendEmailToParticipants", async (req, res) => {
   const eventToSend = await Event.findOne({
     id: req.body.id,
   });
 
+  console.log(eventToSend);
+  const emailArray = [];
+  eventToSend.extendedProps.attendees.map((attendee) => {
+    return emailArray.push(attendee.email);
+  });
+  console.log(emailArray);
+
   const msg = {
-    to: "abc", // Change to your recipient
+    to: emailArray, // Change to your recipient
     from: process.env.SENDGRID_EMAIL, // Change to your verified sender
-    subject: req.body.title,
-    text: "",
-    html: "",
+    subject: `Invite to ${eventToSend.title}`,
+    html: `
+    <html>
+      <body>
+        <div>
+          <h1>You've been invited to the following event: ${
+            eventToSend.title
+          }</h1>
+        </div>
+        <div>
+          <h2>Event Details</h2>
+          <h3>Start Time: ${eventToSend.start.replace("T", " ")}</h3>
+          <h3>End Time:${eventToSend.end.replace("T", " ")} </h3>
+          <h3>Event Description: ${eventToSend.extendedProps.description} </h3>
+        </div>
+        <div>
+          Please confirm your attendance!
+          <span>
+            <button>I am Attending!</button>
+            <button onclick = alert("Please come...")>I am a social recluse</button>
+          </span>
+        </div>
+      </body>
+    </html>`,
   };
   sgMail
     .send(msg)
     .then(() => {
       console.log("Email sent");
-      res.json({ status: "ok", message: `email sent to ${email}` });
+      res.json({ status: "ok", message: `email sent!` });
     })
     .catch((error) => {
       console.error(error);
+      res.json({ status: "error" });
     });
 });
 

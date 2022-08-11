@@ -7,7 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import Link from "../src/Link";
 import Head from "next/head";
 
-import FullCalendar, { formatDate } from "@fullcalendar/react"; //
+import FullCalendar from "@fullcalendar/react"; //
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -123,26 +123,7 @@ export default function CalendarView() {
     setDrawer(!drawer);
     if (!drawer) {
       // Trigger on drawer open
-      console.log(event);
-      setDrawerClick(event); // Might be a date Object. Use <obj>.startStr to get start date https://fullcalendar.io/docs/date-object
-    }
-  };
-
-  // ============================================
-  // ============================================
-  // Deleting Event
-  // ============================================
-  // ============================================
-
-  const handleEventClick = (clickedEvent) => {
-    if (
-      confirm(
-        `Are you sure you want to delete the event '${clickedEvent.event.title}'`
-      )
-    ) {
-      console.log(clickedEvent.event.id);
-      // console.log(clickedEvent);
-      clickedEvent.event.remove();
+      setDrawerClick(event); // Date Object https://fullcalendar.io/docs/date-object
     }
   };
 
@@ -163,9 +144,7 @@ export default function CalendarView() {
             Back to homepage
           </Link>
           <br></br>
-
           <br></br>
-
           {/* ============================================
           ===========Full Calendar Component
           ============================================ */}
@@ -191,12 +170,8 @@ export default function CalendarView() {
             initialView="dayGridMonth"
             dayMaxEvents={true}
             fixedWeekCount={false}
-            // events={seedEvents} // ======= Change this first to read from server Removed to read calendar events only
-            // eventsSet={handleEvents}
             select={toggleDrawer}
-            // eventContent={showEventContent}
           ></FullCalendar>
-
           {/* ============================================
           ===========Full Calendar Component
           ============================================ */}
