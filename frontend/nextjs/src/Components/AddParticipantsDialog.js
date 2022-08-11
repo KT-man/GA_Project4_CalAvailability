@@ -17,71 +17,75 @@ import DialogTitle from "@mui/material/DialogTitle";
 const AddParticipantsDialog = (props) => {
   const [drawerClick, setDrawerClick] = useRecoilState(currentClick);
   const clickedDate = new Date(drawerClick.startStr);
-  console.log(clickedDate.toISOString());
-  const currentDate = new Date();
+
   return (
     <>
       <ListItem disablePadding>
-        <ListItemButton onClick={props.handleNewEventClick}>
+        <ListItemButton onClick={props.handleParticipantsClick}>
           <ListItemIcon>Blank</ListItemIcon>
-          <ListItemText primary="Create New Event" />
+          <ListItemText primary="Add Participants" />
         </ListItemButton>
         <Dialog
-          open={props.showNewEventModal}
-          onClose={props.handleNewEventClick}
+          open={props.showParticipantsModal}
+          onClose={props.handleParticipantsClick}
         >
-          <DialogTitle>Create New Event</DialogTitle>
+          <DialogTitle>Calendar Details for {drawerClick.startStr}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Please enter your event details below!
-            </DialogContentText>
-            <TextField
-              sx={{ m: 1 }}
-              id="EventTitle"
-              label="Event Title"
-              type="text"
-              fullWidth
-              inputRef={props.titleRef}
-            />
-            <TextField
-              sx={{ m: 1 }}
-              id="starttime"
-              type="datetime-local"
-              label="Start Time"
-              inputRef={props.startRef}
-              defaultValue={clickedDate
-                .toISOString()
-                .replace(/..\d.\d+Z$/g, "")}
-            />
-            <TextField
-              sx={{ m: 1 }}
-              label="End Time"
-              id="endtime"
-              type="datetime-local"
-              inputRef={props.endRef}
-              defaultValue={clickedDate
-                .toISOString()
-                .replace(/..\d.\d+Z$/g, "")}
-            />
-            <TextField
-              sx={{ m: 1 }}
-              id="EventDescription"
-              label="Event Description"
-              type="text"
-              fullWidth
-              inputRef={props.descRef}
-            />
+            {dailyEvents.length > 0
+              ? ``
+              : `You have no events available, maybe create some?`}
+
+            {dailyEvents.map((event) => {
+              return (
+                <>
+                  Event Details for <strong>{event.title}</strong>
+                  <Accordion key={event.id} expanded="false">
+                    <AccordionSummary>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">Start Time</TableCell>
+                            <TableCell align="center">End Time</TableCell>
+                            <TableCell align="justify">
+                              Event Description
+                            </TableCell>
+                            <TableCell>Delete</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow></TableRow>
+                          <TableCell>
+                            {event.startStr.split("T")[1].slice(0, 5)}
+                          </TableCell>
+                          <TableCell>
+                            {event.endStr.split("T")[1].slice(0, 5)}
+                          </TableCell>
+                          <TableCell width={300} align="justify">
+                            {event.extendedProps.description}
+                          </TableCell>
+                          <TableCell>
+                            <DeleteButton
+                              id={event.id}
+                              title={event.title}
+                              calendarRef={props.calendarRef}
+                              handleEventDetails={props.handleEventDetails}
+                            ></DeleteButton>
+                          </TableCell>
+                        </TableBody>
+                      </Table>
+                    </AccordionSummary>
+                  </Accordion>
+                </>
+              );
+            })}
           </DialogContent>
           <DialogActions>
-            <Button onClick={props.handleNewEventClick}>Close</Button>
             <Button
               onClick={() => {
-                props.handleNewEventClick(); // Close Dialog
-                props.createNewEvent(); // Create New Event
-                // Link Event to Calendar
+                props.handleEventDetails();
               }}
             >
-              Submit
+              Close
             </Button>
           </DialogActions>
         </Dialog>

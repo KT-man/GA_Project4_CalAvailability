@@ -15,6 +15,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import EventDetailsDialog from "./EventDetailsDialog";
+import AddParticipantsDialog from "./AddParticipantsDialog";
 
 const RenderList = (props) => {
   const userCookies = useRecoilValue(userCookie);
@@ -39,7 +40,7 @@ const RenderList = (props) => {
     setEventDetailsModal(!showEventDetailsModal);
   };
 
-  const handleParticipantsModal = () => {
+  const handleParticipantsClick = () => {
     setParticipantsModal(!showParticipantsModal);
   };
 
@@ -128,12 +129,10 @@ const RenderList = (props) => {
         {/* ======================================================================= */}
         {/* Start of Third Button */}
         {/* Start of Third Button */}
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => console.log("button3")}>
-            <ListItemIcon>Blank</ListItemIcon>
-            <ListItemText primary="Invite Participants" />
-          </ListItemButton>
-        </ListItem>
+        {/* <AddParticipantsDialog
+          handleParticipantsClick={handleParticipantsClick}
+          showParticipantsModal={showParticipantsModal}
+        /> */}
       </List>
 
       <Divider />
